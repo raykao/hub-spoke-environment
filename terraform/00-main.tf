@@ -53,7 +53,6 @@ variable "spoke3_address_space" {
 
 variable "domain" {
   type = string
-  default = "raykao.com"
 }
 
 variable "location1" {
