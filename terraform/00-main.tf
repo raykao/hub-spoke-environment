@@ -57,17 +57,14 @@ variable "domain" {
 
 variable "location1" {
   type = string
-  default = "canadacentral"
 }
 
 variable "location2" {
   type = string
-  default = "canadacentral"
 }
 
 variable "location3" {
   type = string
-  default = "eastus"
 }
 
 locals {
