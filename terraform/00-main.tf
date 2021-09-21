@@ -23,6 +23,7 @@ variable "prefix" {
   type = string
   default = "rk"
 }
+
 variable "sub1SubscriptionId" {
   type = string
 }

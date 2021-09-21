@@ -52,6 +52,14 @@ resource "azurerm_virtual_network_peering" "hubtospoke2" {
 	remote_virtual_network_id = azurerm_virtual_network.spoke2.id
 }
 
+resource "azurerm_virtual_network_peering" "hubtospoke3" {
+	provider = azurerm.sub1
+	name                      = "hubtospoke3"
+	resource_group_name       = azurerm_resource_group.hub.name
+	virtual_network_name      = azurerm_virtual_network.hub.name
+	remote_virtual_network_id = azurerm_virtual_network.spoke3.id
+}
+
 resource "azurerm_user_assigned_identity" "jumpbox" {
 	provider = azurerm.sub1
 	resource_group_name = azurerm_resource_group.hub.name
@@ -134,6 +142,18 @@ resource "azurerm_network_security_group" "jumpbox" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "DenySSHInbound"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Deny"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "22"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
