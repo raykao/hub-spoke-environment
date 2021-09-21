@@ -1,3 +1,4 @@
 prefix = "rk"
 sub1SubscriptionId = "" # Must be Subscription with CSI Drivers enabled for AKS clusters
 sub2SubscriptionId = ""
+domain = ""
