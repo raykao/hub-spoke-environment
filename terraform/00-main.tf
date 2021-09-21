@@ -69,7 +69,7 @@ variable "location3" {
 }
 
 locals {
-  prefix = "${var.prefix}csitest"
+  prefix = "${var.prefix}demoenv"
   location = "eastus"
   admin_username = "${var.prefix}admin"
 }

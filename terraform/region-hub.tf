@@ -65,7 +65,7 @@ resource "azurerm_user_assigned_identity" "jumpbox" {
 	resource_group_name = azurerm_resource_group.hub.name
 	location            = azurerm_resource_group.hub.location
 
-	name = "${var.prefix}-jumpbox-user-msi"
+	name = "${local.prefix}-jumpbox-user-msi"
 }
 
 resource "azurerm_role_assignment" "hub" {
@@ -89,19 +89,26 @@ resource "azurerm_role_assignment" "spoke2" {
 	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
 }
 
+resource "azurerm_role_assignment" "spoke3" {
+  	provider = azurerm.sub1
+	scope                = azurerm_resource_group.spoke3.id
+	role_definition_name = "Contributor"
+	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
+}
+
 resource "azurerm_public_ip" "jumpbox" {
 	provider = azurerm.sub1
-	name                = "${var.prefix}jumpbox-pip"
+	name                = "${local.prefix}jumpbox-pip"
 	resource_group_name = azurerm_resource_group.hub.name
 	location            = azurerm_resource_group.hub.location
 	allocation_method   = "Static"
 	sku 				= "Standard"
-  	domain_name_label = "${var.prefix}jumpbox"
+  	domain_name_label = "${local.prefix}jumpbox"
 }
 
 resource "azurerm_network_interface" "jumpbox" {
 	provider = azurerm.sub1
-	name                = "${var.prefix}jumpbox-nic"
+	name                = "${local.prefix}jumpbox-nic"
 	location            = azurerm_resource_group.hub.location
 	resource_group_name = azurerm_resource_group.hub.name
 
@@ -179,7 +186,7 @@ resource "azurerm_subnet_network_security_group_association" "example" {
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
 	provider = azurerm.sub1
-	name                = "${var.prefix}jumpbox"
+	name                = "${local.prefix}jumpbox"
 	resource_group_name = azurerm_resource_group.hub.name
 	location            = azurerm_resource_group.hub.location
 	size                = "Standard_D16s_v3"
@@ -222,6 +229,52 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
   }
 }
 
+resource "azurerm_private_dns_zone" "hub" {
+	provider = azurerm.sub1
+	name                = "${var.domain}"
+	resource_group_name = azurerm_resource_group.hub.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
+	provider = azurerm.sub1
+
+	name                  = "hub-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.hub.name
+	private_dns_zone_name = azurerm_private_dns_zone.hub.name
+	virtual_network_id    = azurerm_virtual_network.hub.id
+	registration_enabled  = true
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "spoke1" {
+	provider = azurerm.sub1
+
+	name                  = "spoke1-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.hub.name
+	private_dns_zone_name = azurerm_private_dns_zone.hub.name
+	virtual_network_id    = azurerm_virtual_network.spoke1.id
+	registration_enabled  = true
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "spoke2" {
+	provider = azurerm.sub1
+
+	name                  = "spoke2-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.hub.name
+	private_dns_zone_name = azurerm_private_dns_zone.hub.name
+	virtual_network_id    = azurerm_virtual_network.spoke2.id
+	registration_enabled  = true
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "spoke3" {
+	provider = azurerm.sub1
+
+	name                  = "spoke3-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.hub.name
+	private_dns_zone_name = azurerm_private_dns_zone.hub.name
+	virtual_network_id    = azurerm_virtual_network.spoke3.id
+	registration_enabled  = true
+}
+
 resource "azurerm_dns_zone" "prod" {
 	provider = azurerm.sub1
 	name                = "prod.${var.domain}"
@@ -245,12 +298,12 @@ resource "azurerm_dns_zone" "dev" {
 
 resource "azurerm_traffic_manager_profile" "global" {
 	provider = azurerm.sub1
-  name                   = "${var.prefix}-hub-prod"
+  name                   = "${local.prefix}-hub-prod"
   resource_group_name    = azurerm_resource_group.hub.name
   traffic_routing_method = "Performance"
 
   dns_config {
-    relative_name = "${var.prefix}-hub-prod"
+    relative_name = "${local.prefix}-hub-prod"
     ttl           = 60
   }
 
