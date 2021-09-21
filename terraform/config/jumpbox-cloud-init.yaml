@@ -1,0 +1,9 @@
+#cloud-config
+package_upgrade: true
+snap:
+  commands:
+    - 'snap install kubectl --classic'
+    - 'snap install helm --classic'
+    - 'snap install jq'
+    - 'echo "Port 2022" >> /etc/ssh/sshd_config.d/50-cloudimg-settings.conf'
+    - 'shutdown -r now'

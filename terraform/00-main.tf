@@ -46,9 +46,15 @@ variable "spoke2_address_space" {
   default = "10.2.0.0/16"
 }
 
+variable "domain" {
+  type = string
+  default = "raykao.com"
+}
+
 locals {
   prefix = "${var.prefix}csitest"
   location = "eastus"
+  admin_username = "${var.prefix}admin"
 }
 
 output sub1SubscriptionId {
@@ -82,4 +88,12 @@ output clusterName {
 
 output clusterRgName {
 	value = azurerm_resource_group.spoke1.name
+}
+
+output jumpboxIp {
+	value = azurerm_public_ip.jumpbox.ip_address
+}
+
+output jumpboxFQDN {
+	value = azurerm_public_ip.jumpbox.fqdn
 }
