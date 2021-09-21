@@ -1,7 +1,7 @@
 resource "azurerm_resource_group" "hub" {
 	provider = azurerm.sub1
   	name = "${local.prefix}hub-rg"
-  	location = local.location
+  	location = var.location1
 }
 
 resource "azurerm_virtual_network" "hub" {

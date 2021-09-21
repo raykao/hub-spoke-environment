@@ -46,9 +46,29 @@ variable "spoke2_address_space" {
   default = "10.2.0.0/16"
 }
 
+variable "spoke3_address_space" {
+  type = string
+  default = "10.3.0.0/16"
+}
+
 variable "domain" {
   type = string
   default = "raykao.com"
+}
+
+variable "location1" {
+  type = string
+  default = "canadacentral"
+}
+
+variable "location2" {
+  type = string
+  default = "canadacentral"
+}
+
+variable "location3" {
+  type = string
+  default = "eastus"
 }
 
 locals {
