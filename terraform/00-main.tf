@@ -52,6 +52,11 @@ variable "spoke3_address_space" {
   default = "10.3.0.0/16"
 }
 
+variable "spoke4_address_space" {
+  type = string
+  default = "10.4.0.0/16"
+}
+
 variable "domain" {
   type = string
 }
@@ -108,9 +113,9 @@ output clusterRgName {
 }
 
 output jumpboxIp {
-	value = azurerm_public_ip.jumpbox.ip_address
+	value = module.hub-jumpbox.ip
 }
 
 output jumpboxFQDN {
-	value = azurerm_public_ip.jumpbox.fqdn
+	value = module.hub-jumpbox.fqdn
 }
