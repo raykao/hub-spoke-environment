@@ -17,7 +17,7 @@ resource azurerm_subnet firewall {
 
 resource azurerm_subnet vpn {
 	provider = azurerm.sub1
-	name = "VpnGateway"
+	name = "GatewaySubnet"
 	resource_group_name  = azurerm_resource_group.hub.name
 	virtual_network_name = azurerm_virtual_network.hub.name
 	address_prefixes     = [cidrsubnet(azurerm_virtual_network.hub.address_space[0], 8, 1)]
