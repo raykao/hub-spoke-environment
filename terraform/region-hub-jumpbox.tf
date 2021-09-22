@@ -129,7 +129,12 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 	location            = azurerm_resource_group.hub.location
 	size                = "Standard_D16s_v3"
 	admin_username      = local.admin_username
-	custom_data = base64encode(templatefile("${path.module}/config/jumpbox-cloud-init.yaml", {}))
+	custom_data = base64encode(
+		templatefile("${path.module}/config/jumpbox-cloud-init.yaml", 
+		{ 
+			admin_username = local.admin_username 
+		}
+	))
 
 	network_interface_ids = [
 		azurerm_network_interface.jumpbox.id,

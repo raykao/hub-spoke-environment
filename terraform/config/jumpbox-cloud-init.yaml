@@ -1,5 +1,9 @@
 #cloud-config
 package_upgrade: true
+pacakges:
+  - xfce4
+  - xfce4-session
+  - xrdp
 snap:
   commands:
     - 'snap install kubectl --classic'
@@ -8,3 +12,4 @@ snap:
 runcmd:
   - 'echo "Port 2022" >> /etc/ssh/sshd_config.d/50-cloudimg-settings.conf'
   - 'systemctl restart sshd'
+  - 'sudo systemctl enable xrdp'
