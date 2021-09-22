@@ -1,12 +1,11 @@
-
 resource "azurerm_traffic_manager_profile" "global" {
 	provider = azurerm.sub1
-  name                   = "${local.prefix}-hub-prod"
-  resource_group_name    = azurerm_resource_group.hub.name
+  name                   = "${local.prefix}-global-prod"
+  resource_group_name    = azurerm_resource_group.global.name
   traffic_routing_method = "Performance"
 
   dns_config {
-    relative_name = "${local.prefix}-hub-prod"
+    relative_name = "${local.prefix}-global-prod"
     ttl           = 60
   }
 

@@ -7,6 +7,6 @@ terraform {
 	}
 }
 
-output "jumpbox_msi" {
-	value = azurerm_user_assigned_identity.jumpbox.id
+locals {
+	prefix = var.prefix
 }
