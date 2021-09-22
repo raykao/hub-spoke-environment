@@ -13,27 +13,6 @@ resource "azurerm_role_assignment" "hub" {
 	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
 }
 
-resource "azurerm_role_assignment" "spoke1" {
-  	provider = azurerm.sub1
-	scope                = azurerm_resource_group.spoke1.id
-	role_definition_name = "Contributor"
-	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
-}
-
-resource "azurerm_role_assignment" "spoke2" {
-  	provider = azurerm.sub1
-	scope                = azurerm_resource_group.spoke2.id
-	role_definition_name = "Contributor"
-	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
-}
-
-resource "azurerm_role_assignment" "spoke3" {
-  	provider = azurerm.sub1
-	scope                = azurerm_resource_group.spoke3.id
-	role_definition_name = "Contributor"
-	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
-}
-
 resource "azurerm_public_ip" "jumpbox" {
 	provider = azurerm.sub1
 	name                = "${local.prefix}jumpbox-pip"
