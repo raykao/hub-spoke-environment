@@ -4,3 +4,5 @@ terraform.tfvars
 tfplan
 
 tf*.yaml
+
+certs/
