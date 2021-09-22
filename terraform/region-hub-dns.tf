@@ -51,15 +51,6 @@ resource "azurerm_dns_zone" "prod" {
 	resource_group_name = azurerm_resource_group.hub.name
 }
 
-resource "azurerm_dns_cname_record" "jumpbox" {
-	provider = azurerm.sub1
-	name                = "jumpbox"
-	zone_name           = azurerm_dns_zone.prod.name
-	resource_group_name = azurerm_resource_group.hub.name
-	ttl                 = 60
-	record              = azurerm_public_ip.jumpbox.fqdn
-}
-
 resource "azurerm_dns_zone" "dev" {
 	provider = azurerm.sub1
 	name                = "dev.${var.domain}"
