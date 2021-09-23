@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "vpngateway" {
-	provider = azurerm.sub1
+	
 	name                = "${local.prefix}-hub-vpn-pip"
 	resource_group_name = azurerm_resource_group.hub.name
 	location            = azurerm_resource_group.hub.location
@@ -62,7 +62,7 @@ data "local_file" "ca_der" {
 }
 
 resource "azurerm_virtual_network_gateway" "default" {
-	provider = azurerm.sub1
+	
   name                = "${local.prefix}-vpn"
   location            = azurerm_resource_group.hub.location
   resource_group_name = azurerm_resource_group.hub.name

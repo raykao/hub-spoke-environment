@@ -1,5 +1,4 @@
 resource "azurerm_traffic_manager_profile" "global" {
-	provider = azurerm.sub1
   name                   = "${local.prefix}-global-prod"
   resource_group_name    = azurerm_resource_group.global.name
   traffic_routing_method = "Performance"

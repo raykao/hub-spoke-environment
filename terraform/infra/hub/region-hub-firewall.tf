@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "firewall" {
-	provider = azurerm.sub1
+	
 	name                = "${local.prefix}-hub-fw-pip"
 	location            = azurerm_resource_group.hub.location
 	resource_group_name = azurerm_resource_group.hub.name
@@ -8,7 +8,7 @@ resource "azurerm_public_ip" "firewall" {
 }
 
 resource "azurerm_firewall" "hub" {
-	provider = azurerm.sub1
+	
 	name                = "${local.prefix}-hub-fw"
 	location            = azurerm_resource_group.hub.location
 	resource_group_name = azurerm_resource_group.hub.name

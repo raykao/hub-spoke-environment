@@ -9,13 +9,13 @@ terraform {
 
 provider azurerm {
 	alias = "sub1"
-	subscription_id = var.sub1SubscriptionId
+	subscription_id = var.subId1
 	features {}
 }
 
 provider azurerm {
 	alias = "sub2"
-	subscription_id = var.sub2SubscriptionId
+	subscription_id = var.subId2
 	features {}
 }
 
@@ -24,11 +24,11 @@ variable "prefix" {
   default = "rk"
 }
 
-variable "sub1SubscriptionId" {
+variable "subId1" {
   type = string
 }
 
-variable "sub2SubscriptionId" {
+variable "subId2" {
   type = string
 }
 

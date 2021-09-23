@@ -1,8 +1,6 @@
 ## Required Variables
 prefix = ""
-sub1SubscriptionId = "" # Must be Subscription with CSI Drivers enabled for AKS clusters
-sub2SubscriptionId = ""
+subId1 = "" # Must be Subscription with CSI Drivers enabled for AKS clusters
+subId2 = ""
 domain = ""
-location1 = ""
-location2 = ""
-location3 = ""
+global_address_space = ""
