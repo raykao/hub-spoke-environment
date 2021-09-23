@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "spoke4-vpngateway" {
-	provider = azurerm.sub1
+	
 	name                = "${local.prefix}-spoke4-vpn-pip"
 	resource_group_name = azurerm_resource_group.spoke4.name
 	location            = azurerm_resource_group.spoke4.location
@@ -62,7 +62,7 @@ data "local_file" "spoke4-ca_der" {
 }
 
 resource "azurerm_virtual_network_gateway" "spoke4" {
-	provider = azurerm.sub1
+	
   name                = "${local.prefix}-spoke4-vpn"
   location            = azurerm_resource_group.spoke4.location
   resource_group_name = azurerm_resource_group.spoke4.name

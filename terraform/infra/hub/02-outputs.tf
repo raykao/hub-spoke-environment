@@ -1,5 +1,9 @@
-output vnet_id {
-	value = azurerm_virtual_network.hub.id
+output vnet {
+	value = azurerm_virtual_network.hub
+}
+
+output resource_group {
+	value = azurerm_resource_group.hub
 }
 
 output jumpbox {
