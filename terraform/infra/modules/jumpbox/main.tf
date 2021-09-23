@@ -32,19 +32,30 @@ variable userMSI {
 	default = ""
 }
 
+resource "random_string" "suffix" {
+	length  = 4
+	special = false
+	number 	= false
+	upper 	= false
+}
+
+locals {
+	prefix = "${var.prefix}"
+}
+
 resource "azurerm_public_ip" "jumpbox" {
 	# provider = azurerm.sub
-	name                = "${var.prefix}jumpbox-pip"
+	name                = "${local.prefix}jumpbox${random_string.suffix.result}-pip"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
 	allocation_method   = "Static"
 	sku 				= "Standard"
-  	domain_name_label = "${var.prefix}jumpbox"
+  	domain_name_label = "${local.prefix}jumpbox${random_string.suffix.result}"
 }
 
 resource "azurerm_network_interface" "jumpbox" {
 	# provider = azurerm.sub
-	name                = "${var.prefix}jumpbox-nic"
+	name                = "${local.prefix}jumpbox${random_string.suffix.result}-nic"
 	location            = var.resource_group.location
 	resource_group_name = var.resource_group.name
 
@@ -122,7 +133,7 @@ resource "azurerm_subnet_network_security_group_association" "example" {
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
 	# provider = azurerm.sub
-	name                = "${var.prefix}jumpbox"
+	name                = "${local.prefix}jumpbox${random_string.suffix.result}"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
 	size                = var.vm_size

@@ -41,7 +41,7 @@ resource "tls_self_signed_cert" "ca" {
 }
 
 resource "local_file" "ca_pem" {
-  filename = "certs/${terraform.workspace}/caCert.pem"
+  filename = "certs/${terraform.workspace}/hub/caCert.pem"
   content  = tls_self_signed_cert.ca.cert_pem
   file_permission = "0640"
 }
@@ -50,12 +50,12 @@ resource "null_resource" "cert_encode" {
   depends_on =  [ local_file.ca_pem ]
   
   provisioner "local-exec" {
-      command = "openssl x509 -in certs/${terraform.workspace}/caCert.pem -outform der | if [[ \"$(uname)\" = \"Darwin\" ]]; then base64 > certs/${terraform.workspace}/caCert.der; else base64 -w0 > certs/${terraform.workspace}/caCert.der; fi"
+      command = "openssl x509 -in certs/${terraform.workspace}/hub/caCert.pem -outform der | if [[ \"$(uname)\" = \"Darwin\" ]]; then base64 > certs/${terraform.workspace}/hub/caCert.der; else base64 -w0 > certs/${terraform.workspace}/hub/caCert.der; fi"
   }
 }
 
 data "local_file" "ca_der" {
-  filename = "certs/${terraform.workspace}/caCert.der"
+  filename = "certs/${terraform.workspace}/hub/caCert.der"
   depends_on = [
     null_resource.cert_encode
   ]

@@ -13,13 +13,13 @@ resource "azurerm_storage_share" "spoke2" {
 }
 
 resource "azurerm_private_endpoint" "storage-spoke2" {
-	name = "pe-storage-spoke2"
+	name = "${local.prefix}-pe-storage-spoke2"
 	location = azurerm_resource_group.spoke2.location
 	resource_group_name = azurerm_resource_group.spoke2.name
 	subnet_id = azurerm_subnet.spoke2-pe.id
 
   private_service_connection {
-	name = "storage-privateserviceconnection"
+	name = "${local.prefix}storage-privateserviceconnection"
 	is_manual_connection = false
 	private_connection_resource_id = azurerm_storage_account.spoke2.id
 	subresource_names = ["file"]
