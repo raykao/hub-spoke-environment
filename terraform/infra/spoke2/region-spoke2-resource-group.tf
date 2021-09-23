@@ -1,12 +1,10 @@
 resource "azurerm_resource_group" "spoke2" {
-	provider = azurerm.sub2
-  	name = "${local.prefix}spoke2-rg"
-  	location = var.location2
+	name = "${local.prefix}spoke2"
+	location = var.location
 }
 
 resource "azurerm_role_assignment" "spoke2" {
-  	
 	scope                = azurerm_resource_group.spoke2.id
 	role_definition_name = "Contributor"
-	principal_id         = azurerm_user_assigned_identity.jumpbox.principal_id
+	principal_id         = var.contributor_msi.principal_id
 }
