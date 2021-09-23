@@ -87,42 +87,6 @@ resource "azurerm_network_security_group" "jumpbox" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-
-  security_rule {
-    name                       = "AllowEverythingOutbound"
-    priority                   = 100
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "DenySSHInbound"
-    priority                   = 110
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "DenyInboundOMIGod"
-    priority                   = 500
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "5986"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "example" {

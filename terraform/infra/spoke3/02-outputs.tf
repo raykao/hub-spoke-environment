@@ -5,3 +5,11 @@ output vnet {
 output resource_group {
 	value = azurerm_resource_group.spoke3
 }
+
+output jumpbox {
+	value = {
+		ip_address 	= module.jumpbox.ip
+		fqdn				= module.jumpbox.fqdn
+		ssh					= "ssh -p 2022 ${var.admin_username}@${module.jumpbox.ip}"
+	}
+}
