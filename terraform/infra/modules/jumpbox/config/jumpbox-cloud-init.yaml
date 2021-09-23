@@ -1,15 +1,31 @@
 #cloud-config
 package_upgrade: true
-pacakges:
+packages:
   - xfce4
   - xfce4-session
   - xrdp
+  - python3-pip
+  - flameshot 
+  - i3-wm 
+  - rofi 
+  - i3status 
+  - suckless-tools 
+  - clipit
+  - firefox
 snap:
   commands:
     - 'snap install kubectl --classic'
     - 'snap install helm --classic'
     - 'snap install jq'
+users:
+  - default
+write_files:
+  - path: /etc/skel/.xsession
+    content: |
+      xfce4-session
+    permissions: '0640'
 runcmd:
   - 'echo "Port 2022" >> /etc/ssh/sshd_config.d/50-cloudimg-settings.conf'
   - 'systemctl restart sshd'
-  - 'sudo systemctl enable xrdp'
+  - 'systemctl enable xrdp'
+  - 'systemctl restart xrdp'

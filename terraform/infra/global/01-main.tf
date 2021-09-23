@@ -10,3 +10,6 @@ terraform {
 locals {
 	prefix = var.prefix
 }
+
+data "azurerm_client_config" "current" {
+}

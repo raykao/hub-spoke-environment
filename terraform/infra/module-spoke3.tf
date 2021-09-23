@@ -8,6 +8,7 @@ module spoke3 {
 	location = "eastus"
 	contributor_msi = module.global.contributor_msi
 	admin_username = local.admin_username
+	ssh_key = "${path.module}/certs/${terraform.workspace}/global/id_rsa.pub"
 	address_space = cidrsubnet(var.global_address_space, 8, 3)
 	domain = var.domain
 }

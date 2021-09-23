@@ -9,6 +9,8 @@ output subId2 {
 output hub {
 	value = {
 		jumpbox = module.hub.jumpbox
+		ssh = "ssh -p 2022 -i ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}"
+		xrdp_tunnel = "ssh -L 3389:localhost:3389 -p 2022 -i ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}"
 	}
 }
 

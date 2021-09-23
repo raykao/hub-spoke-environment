@@ -15,6 +15,11 @@ variable "admin_username" {
 	default = ""
 }
 
+variable "ssh_key" {
+	type = string
+	default = ""
+}
+
 variable "address_space" {
 	type = string
 }

@@ -27,6 +27,11 @@ variable "admin_username" {
 	type = string
 }
 
+variable "ssh_key" {
+	type = string
+	default = ""
+}
+
 variable userMSI {
 	type = string
 	default = ""
@@ -41,6 +46,11 @@ resource "random_string" "suffix" {
 
 locals {
 	prefix = "${var.prefix}"
+	ssh_key = var.ssh_key != "" ? var.ssh_key : "~/.ssh/id_rsa.pub"
+}
+
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
 }
 
 resource "azurerm_public_ip" "jumpbox" {
@@ -84,7 +94,7 @@ resource "azurerm_network_security_group" "jumpbox" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "2022"
-    source_address_prefix      = "*"
+    source_address_prefix      = "${chomp(data.http.myip.body)}/32"
     destination_address_prefix = "*"
   }
 }
@@ -122,7 +132,7 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 
 	admin_ssh_key {
 		username   = var.admin_username
-		public_key = file("~/.ssh/id_rsa.pub")
+		public_key = file(local.ssh_key)
 	}
 
 	os_disk {
@@ -138,11 +148,11 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 		version   = "20.04.202109080"
 	}
 
-	lifecycle {
-		ignore_changes = [
-			custom_data,
-		]
-  }
+	# lifecycle {
+	# 	ignore_changes = [
+	# 		custom_data,
+	# 	]
+  # }
 }
 
 output ip {
