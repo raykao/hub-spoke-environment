@@ -18,6 +18,7 @@ snap:
     - 'snap install --classic helm'
     - 'snap install jq'
     - 'snap install --classic certbot'
+    - 'snap install --classic code'
 users:
   - default
 write_files:
