@@ -54,7 +54,6 @@ data "http" "myip" {
 }
 
 resource "azurerm_public_ip" "jumpbox" {
-	# provider = azurerm.sub
 	name                = "${local.prefix}jumpbox${random_string.suffix.result}-pip"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
@@ -64,7 +63,6 @@ resource "azurerm_public_ip" "jumpbox" {
 }
 
 resource "azurerm_network_interface" "jumpbox" {
-	# provider = azurerm.sub
 	name                = "${local.prefix}jumpbox${random_string.suffix.result}-nic"
 	location            = var.resource_group.location
 	resource_group_name = var.resource_group.name
@@ -80,8 +78,7 @@ resource "azurerm_network_interface" "jumpbox" {
 }
 
 resource "azurerm_network_security_group" "jumpbox" {
-  	# provider = azurerm.sub
-
+  
 	name                = "JumpboxNSG"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
@@ -112,13 +109,11 @@ resource "azurerm_network_security_group" "jumpbox" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "example" {
-	# provider = azurerm.sub
 	subnet_id                 = var.subnet_id
 	network_security_group_id = azurerm_network_security_group.jumpbox.id
 }
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
-	# provider = azurerm.sub
 	name                = "${local.prefix}jumpbox${random_string.suffix.result}"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
