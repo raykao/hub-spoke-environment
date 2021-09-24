@@ -31,27 +31,3 @@ resource "null_resource" "upload-id_rsa" {
       command = "scp -P 2022 -o StrictHostKeyChecking=no -q -i ${path.module}/certs/${terraform.workspace}/global/id_rsa ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}:~/.ssh"
   }
 }
-
-# resource "azurerm_virtual_network_peering" "hubtospoke1" {
-	
-# 	name                      = "hubtospoke1"
-# 	resource_group_name       = azurerm_resource_group.hub.name
-# 	virtual_network_name      = azurerm_virtual_network.hub.name
-# 	remote_virtual_network_id = azurerm_virtual_network.spoke1.id
-# }
-
-# resource "azurerm_virtual_network_peering" "hubtospoke2" {
-	
-# 	name                      = "hubtospoke2"
-# 	resource_group_name       = azurerm_resource_group.hub.name
-# 	virtual_network_name      = azurerm_virtual_network.hub.name
-# 	remote_virtual_network_id = azurerm_virtual_network.spoke2.id
-# }
-
-# resource "azurerm_virtual_network_peering" "hubtospoke3" {
-	
-# 	name                      = "hubtospoke3"
-# 	resource_group_name       = azurerm_resource_group.hub.name
-# 	virtual_network_name      = azurerm_virtual_network.hub.name
-# 	remote_virtual_network_id = azurerm_virtual_network.spoke3.id
-# }
