@@ -31,3 +31,7 @@ variable "domain" {
 variable "hub" {
 	
 }
+
+variable "admin_email" {
+	type = string
+}

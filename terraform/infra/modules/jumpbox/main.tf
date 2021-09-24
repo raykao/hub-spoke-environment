@@ -37,6 +37,10 @@ variable userMSI {
 	default = ""
 }
 
+variable "admin_email" {
+	type = string
+}
+
 resource "random_string" "suffix" {
 	length  = 4
 	special = false
@@ -50,7 +54,7 @@ locals {
 }
 
 data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
+  url = "https://api.ipify.org/"
 }
 
 resource "azurerm_public_ip" "jumpbox" {
@@ -96,14 +100,38 @@ resource "azurerm_network_security_group" "jumpbox" {
   }
 
 	security_rule {
-    name                       = "AllowRDPInbound2202"
+    name                       = "AllowRDPInbound2023"
     priority                   = 110
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "3389"
+    destination_port_range     = "2023"
     source_address_prefix      = "${chomp(data.http.myip.body)}/32"
+    destination_address_prefix = "*"
+  }
+
+	security_rule {
+    name                       = "AllowHttpInternetInbound"
+    priority                   = 200
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+	security_rule {
+    name                       = "AllowHttpsInternetInbound"
+    priority                   = 201
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 }
@@ -122,7 +150,9 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 	custom_data = base64encode(
 		templatefile("${path.module}/config/jumpbox-cloud-init.yaml", 
 		{ 
-			admin_username = var.admin_username 
+			admin_username = var.admin_username
+			url = azurerm_public_ip.jumpbox.fqdn
+			admin_email = var.admin_email
 		}
 	))
 

@@ -14,6 +14,7 @@ module spoke3 {
 	hub = {
 		vnet = module.hub.vnet
 	}
+	admin_email = var.admin_email
 }
 
 resource "azurerm_virtual_network_peering" "hubtospoke3" {	

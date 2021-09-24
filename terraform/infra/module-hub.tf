@@ -12,6 +12,7 @@ module hub {
 	address_space = cidrsubnet(var.global_address_space, 8, 0)
 	global_address_space = var.global_address_space
 	domain = var.domain
+	admin_email = var.admin_email
 }
 
 resource "time_sleep" "wait_60_seconds" {

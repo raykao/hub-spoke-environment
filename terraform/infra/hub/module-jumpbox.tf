@@ -7,4 +7,5 @@ module "hub-jumpbox" {
 	admin_username = var.admin_username
 	ssh_key = var.ssh_key
 	vm_size = "Standard_F16s_v2"
+	admin_email = var.admin_email
 }

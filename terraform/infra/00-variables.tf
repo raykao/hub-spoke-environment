@@ -24,3 +24,7 @@ variable "ssh_key" {
   type = string
   default = "~/.ssh/id_rsa"
 }
+
+variable "admin_email" {
+  type = string
+}
