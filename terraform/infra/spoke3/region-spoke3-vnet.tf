@@ -3,6 +3,7 @@ resource "azurerm_virtual_network" "spoke3" {
 	resource_group_name = azurerm_resource_group.spoke3.name
 	location = azurerm_resource_group.spoke3.location
 	address_space       = [var.address_space]
+	dns_servers = var.hub.vnet.dns_servers
 }
 
 resource "azurerm_subnet" "spoke3-pe" {

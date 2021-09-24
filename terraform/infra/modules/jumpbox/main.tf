@@ -20,7 +20,7 @@ variable "subnet_id" {
 
 variable "vm_size" {
 	type = string
-	default = "Standard_D4s_v3"
+	default = "Standard_D2s_v3"
 }
 
 variable "admin_username" {
