@@ -3,4 +3,5 @@ prefix = ""
 subId1 = "" # Must be Subscription with CSI Drivers enabled for AKS clusters
 subId2 = ""
 domain = ""
-global_address_space = "10.0.0.0/8"
+global_address_space = "10.0.0.0/8" ## you can use whatever address space you want...but it does expect a /8 cidr
+admin_email = ""
