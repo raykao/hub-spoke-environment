@@ -17,10 +17,14 @@ variable "admin_username" {
 
 variable "ssh_key" {
 	type = string
-	default = ""
+	default = "~/.ssh/id_rsa"
 }
 
 variable "address_space" {
+	type = string
+}
+
+variable "global_address_space" {
 	type = string
 }
 

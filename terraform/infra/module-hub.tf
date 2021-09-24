@@ -10,6 +10,7 @@ module hub {
 	admin_username = local.admin_username
 	ssh_key = "${path.module}/certs/${terraform.workspace}/global/id_rsa.pub"
 	address_space = cidrsubnet(var.global_address_space, 8, 0)
+	global_address_space = var.global_address_space
 	domain = var.domain
 }
 

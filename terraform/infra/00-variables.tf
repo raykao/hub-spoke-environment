@@ -19,3 +19,8 @@ variable "global_address_space" {
 variable "domain" {
   type = string
 }
+
+variable "ssh_key" {
+  type = string
+  default = "~/.ssh/id_rsa"
+}

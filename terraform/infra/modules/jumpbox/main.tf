@@ -29,7 +29,7 @@ variable "admin_username" {
 
 variable "ssh_key" {
 	type = string
-	default = ""
+	default = "~/.ssh/id_rsa"
 }
 
 variable userMSI {

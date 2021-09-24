@@ -1,0 +1,9 @@
+module "dns" {
+  source = "../modules/bind9"
+  prefix = local.prefix
+  vnet_address_spaces = [var.global_address_space]
+  subnet_id = azurerm_subnet.dns.id
+  resource_group = azurerm_resource_group.hub
+  admin_username = var.admin_username
+  ssh_key = var.ssh_key
+}
