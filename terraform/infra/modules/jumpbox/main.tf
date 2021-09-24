@@ -97,6 +97,18 @@ resource "azurerm_network_security_group" "jumpbox" {
     source_address_prefix      = "${chomp(data.http.myip.body)}/32"
     destination_address_prefix = "*"
   }
+
+	security_rule {
+    name                       = "AllowRDPInbound2202"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = "${chomp(data.http.myip.body)}/32"
+    destination_address_prefix = "*"
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "example" {
