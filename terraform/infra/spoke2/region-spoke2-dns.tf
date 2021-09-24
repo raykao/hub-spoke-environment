@@ -30,3 +30,10 @@ resource "azurerm_private_dns_zone_virtual_network_link" "storage" {
 	private_dns_zone_name = azurerm_private_dns_zone.storage-priv-link.name
 	virtual_network_id    = each.value
 }
+
+resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
+	name                  = "hub-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.spoke2.name
+	private_dns_zone_name = azurerm_private_dns_zone.spoke2.name
+	virtual_network_id    = var.hub.vnet.id
+}

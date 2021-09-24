@@ -10,6 +10,9 @@ module spoke1 {
 	admin_username = local.admin_username
 	address_space = cidrsubnet(var.global_address_space, 8, 1)
 	domain = var.domain
+	hub = {
+		vnet = module.hub.vnet
+	}
 }
 
 resource "azurerm_virtual_network_peering" "hubtospoke1" {	

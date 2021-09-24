@@ -148,11 +148,11 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 		version   = "20.04.202109080"
 	}
 
-	# lifecycle {
-	# 	ignore_changes = [
-	# 		custom_data,
-	# 	]
-  # }
+	lifecycle {
+		ignore_changes = [
+			custom_data
+		]
+  }
 }
 
 output ip {

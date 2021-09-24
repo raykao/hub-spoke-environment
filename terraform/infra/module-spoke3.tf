@@ -11,6 +11,9 @@ module spoke3 {
 	ssh_key = "${path.module}/certs/${terraform.workspace}/global/id_rsa.pub"
 	address_space = cidrsubnet(var.global_address_space, 8, 3)
 	domain = var.domain
+	hub = {
+		vnet = module.hub.vnet
+	}
 }
 
 resource "azurerm_virtual_network_peering" "hubtospoke3" {	

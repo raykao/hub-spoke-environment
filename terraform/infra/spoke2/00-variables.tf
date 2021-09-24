@@ -26,3 +26,7 @@ variable "domain" {
 variable "priv-dns-zone-links" {
 	type = map
 }
+
+variable "hub" {
+	
+}

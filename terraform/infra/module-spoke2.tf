@@ -14,6 +14,9 @@ module spoke2 {
 		hub = module.hub.vnet.id
 		spoke1 = module.spoke1.vnet.id
 	}
+	hub = {
+		vnet = module.hub.vnet
+	}
 }
 
 resource "azurerm_virtual_network_peering" "hubtospoke2" {	

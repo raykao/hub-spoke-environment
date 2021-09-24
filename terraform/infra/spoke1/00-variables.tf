@@ -22,3 +22,6 @@ variable "address_space" {
 variable "domain" {
 	type = string
 }
+
+variable "hub" {
+}
