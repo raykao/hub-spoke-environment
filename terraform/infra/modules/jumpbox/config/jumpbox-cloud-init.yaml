@@ -10,7 +10,7 @@ packages:
   - rofi 
   - i3status 
   - suckless-tools 
-  - clipit
+  - apt-transport-https
   - firefox
   - gnupg2
   - podman
@@ -46,6 +46,12 @@ runcmd:
   - apt-get update -qq -y
   - apt-get -qq --yes install podman
   - echo 'alias docker=podman' >> /etc/skel/.profile
+  # Install dotnet core 5 - https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-
+  - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  - dpkg -i packages-microsoft-prod.deb
+  - rm packages-microsoft-prod.deb
+  - apt-get update
+  - apt-get install -y dotnet-sdk-5.0
   # change default RDP port
   - "sed -i 's/port=3389/port=2023/' /etc/xrdp/xrdp.ini"
   - 'systemctl enable xrdp'
