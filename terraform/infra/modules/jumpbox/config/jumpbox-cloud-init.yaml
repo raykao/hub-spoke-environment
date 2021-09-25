@@ -13,7 +13,6 @@ packages:
   - apt-transport-https
   - firefox
   - gnupg2
-  - podman
   - unzip
 snap:
   commands:
