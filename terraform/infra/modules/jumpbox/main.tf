@@ -153,6 +153,7 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 			admin_username = var.admin_username
 			url = azurerm_public_ip.jumpbox.fqdn
 			admin_email = var.admin_email
+			terraform_version = "1.0.7"
 		}
 	))
 
