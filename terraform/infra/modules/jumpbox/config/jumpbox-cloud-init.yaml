@@ -12,6 +12,8 @@ packages:
   - suckless-tools 
   - clipit
   - firefox
+  - gnupg2
+  - podman
 snap:
   commands:
     - 'snap install --classic kubectl'
@@ -38,6 +40,12 @@ runcmd:
   - 'ln -s /etc/letsencrypt/live/${url}/privkey.pem /etc/xrdp/key.pem'
   - 'rm /etc/xrdp/cert.pem'
   - 'ln -s /etc/letsencrypt/live/${url}/fullchain.pem /etc/xrdp/cert.pem'
+  # Install Podman
+  - source /etc/os-release; sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+  - wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_20.04/Release.key -O- | apt-key add -
+  - apt-get update -qq -y
+  - apt-get -qq --yes install podman
+  - echo 'alias docker=podman' >> /etc/skel/.profile
   # change default RDP port
   - "sed -i 's/port=3389/port=2023/' /etc/xrdp/xrdp.ini"
   - 'systemctl enable xrdp'
