@@ -28,6 +28,15 @@ write_files:
     content: |
       xfce4-session
     permissions: '0640'
+  - path: /etc/skel/.bash_profile
+    content: |
+      if [ -f ~/.bashrc ]; then
+          source ~/.bashrc
+      fi
+
+      export PATH=$PATH:/usr/local/go/bin
+      alias docker=podman
+    permissions: '0640'
 runcmd:
   # change default SSH port
   - 'echo "Port 2022" >> /etc/ssh/sshd_config.d/50-cloudimg-settings.conf'
@@ -45,7 +54,6 @@ runcmd:
   - wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_20.04/Release.key -O- | apt-key add -
   - apt-get update -qq -y
   - apt-get -qq --yes install podman
-  - echo 'alias docker=podman' >> /etc/skel/.profile
   # Install dotnet core 5 - https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-
   - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   - dpkg -i packages-microsoft-prod.deb
@@ -56,7 +64,8 @@ runcmd:
   - "sed -i 's/port=3389/port=2023/' /etc/xrdp/xrdp.ini"
   - 'systemctl enable xrdp'
   - 'systemctl restart xrdp'
+  # Install Azure CLI
+  - curl -L https://aka.ms/InstallAzureCli | bash
   # Install Terraform
-  - cd /usr/local/bin
-  - wget -o terraform.zip https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip
-  - unzip terraform.zip && rm terraform.zip
+  - cd /usr/local/bin; wget -o terraform.zip https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip; unzip terraform.zip && rm terraform.zip
+  - cd /tmp; wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz; tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz
