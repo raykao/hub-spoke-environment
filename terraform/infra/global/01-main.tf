@@ -7,14 +7,6 @@ terraform {
 	}
 }
 
-
-provider "azurerm" {
-  # Configuration options
-	features {
-		
-	}
-}
-
 locals {
 	prefix = var.prefix
 }

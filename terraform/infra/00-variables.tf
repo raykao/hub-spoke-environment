@@ -1,7 +1,7 @@
-# variable "prefix" {
-#   type = string
-#   default = "rk"
-# }
+variable "prefix" {
+  type = string
+  default = "rk"
+}
 
 variable "subId1" {
   type = string

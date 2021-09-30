@@ -19,17 +19,9 @@ provider azurerm {
 	features {}
 }
 
-data terraform_remote_state global {
-	backend= "local"
-
-	config = {
-		path = "${path.module}/global/terraform.tfstate"
-	}
-}
-
 locals {
-	global = data.terraform_remote_state.global.outputs
-  prefix = local.global.prefix
+	# global = data.terraform_remote_state.global.outputs
+  prefix = var.prefix
   location = "eastus"
   admin_username = "${local.prefix}admin"
 }

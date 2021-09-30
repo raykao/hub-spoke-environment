@@ -8,6 +8,7 @@ variable "location" {
 }
 
 variable "contributor_msi" {
+	default = ""
 }
 
 variable "admin_username" {

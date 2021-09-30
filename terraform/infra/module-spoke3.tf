@@ -6,9 +6,9 @@ module spoke3 {
 	}
 	prefix = "${local.prefix}s3"
 	location = "eastus"
-	# contributor_msi = local.global.contributor_msi
+	contributor_msi = module.global.contributor_msi
 	admin_username = local.admin_username
-	ssh_key = local.global.public_key
+	ssh_key = module.global.public_key
 	address_space = cidrsubnet(var.global_address_space, 8, 3)
 	domain = var.domain
 	hub = {

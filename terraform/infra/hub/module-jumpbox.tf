@@ -1,4 +1,8 @@
-module "hub-jumpbox" {
+module "jumpbox" {
+	depends_on = [
+		module.dns
+	]
+	
 	source = "../../modules/jumpbox"
 	userMSI = var.contributor_msi.id
 	prefix = local.prefix
