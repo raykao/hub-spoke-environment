@@ -10,3 +10,7 @@ variable "location" {
 variable "domain" {
 	type = string
 }
+
+variable "admin_email" {
+	type = string
+}

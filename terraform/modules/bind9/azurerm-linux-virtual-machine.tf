@@ -26,7 +26,7 @@ resource "azurerm_linux_virtual_machine" "dnsForwarder" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = file(var.ssh_key)
+    public_key = var.ssh_key
   }
 
   os_disk {

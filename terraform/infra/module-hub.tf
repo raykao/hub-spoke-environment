@@ -1,34 +1,34 @@
 module hub {
 	source = "./hub"
-	
+
 	providers = {
 		azurerm = azurerm.sub1
 	}
-	prefix = local.prefix
+	prefix = "${local.prefix}hub"
 	location = "canadacentral"
-	contributor_msi = module.global.contributor_msi
+	contributor_msi = local.global.contributor_msi
 	admin_username = local.admin_username
-	ssh_key = "${path.module}/certs/${terraform.workspace}/global/id_rsa.pub"
+	ssh_key = local.global.public_key
 	address_space = cidrsubnet(var.global_address_space, 8, 0)
 	global_address_space = var.global_address_space
 	domain = var.domain
 	admin_email = var.admin_email
 }
 
-resource "time_sleep" "wait_60_seconds" {
-  depends_on = [
-		module.hub
-	]
+# resource "time_sleep" "wait_60_seconds" {
+#   depends_on = [
+# 		module.hub
+# 	]
 
-  create_duration = "60s"
-}
+#   create_duration = "60s"
+# }
 
-resource "null_resource" "upload-id_rsa" {
-  depends_on =  [ 
-		time_sleep.wait_60_seconds
-	]
+# resource "null_resource" "upload-id_rsa" {
+#   depends_on =  [ 
+# 		time_sleep.wait_60_seconds
+# 	]
   
-  provisioner "local-exec" {
-      command = "scp -P 2022 -o StrictHostKeyChecking=no -q -i ${path.module}/certs/${terraform.workspace}/global/id_rsa ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}:~/.ssh"
-  }
-}
+#   provisioner "local-exec" {
+#       command = "scp -P 2022 -o StrictHostKeyChecking=no -q -i ${path.module}/../global/certs/${terraform.workspace}/global/id_rsa ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}:~/.ssh"
+#   }
+# }

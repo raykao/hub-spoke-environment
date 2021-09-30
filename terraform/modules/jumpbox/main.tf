@@ -2,7 +2,7 @@ terraform {
 	required_providers {
 		azurerm = {
 			source = "hashicorp/azurerm"
-			version = "~> 2.70.0"
+			version = "~> 2.78.0"
 		}
 	}
 }
@@ -29,7 +29,6 @@ variable "admin_username" {
 
 variable "ssh_key" {
 	type = string
-	default = "~/.ssh/id_rsa"
 }
 
 variable userMSI {
@@ -41,6 +40,11 @@ variable "admin_email" {
 	type = string
 }
 
+variable "index" {
+	type = string
+	default = ""
+}
+
 resource "random_string" "suffix" {
 	length  = 4
 	special = false
@@ -50,7 +54,7 @@ resource "random_string" "suffix" {
 
 locals {
 	prefix = "${var.prefix}"
-	ssh_key = var.ssh_key != "" ? var.ssh_key : "~/.ssh/id_rsa.pub"
+	index = var.index != "" ? var.index : random_string.suffix.result
 }
 
 data "http" "myip" {
@@ -58,16 +62,16 @@ data "http" "myip" {
 }
 
 resource "azurerm_public_ip" "jumpbox" {
-	name                = "${local.prefix}jumpbox${random_string.suffix.result}-pip"
+	name                = "${local.prefix}jumpbox${local.index}-pip"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
 	allocation_method   = "Static"
 	sku 				= "Standard"
-  	domain_name_label = "${local.prefix}jumpbox${random_string.suffix.result}"
+  	domain_name_label = "${local.prefix}jumpbox${local.index}"
 }
 
 resource "azurerm_network_interface" "jumpbox" {
-	name                = "${local.prefix}jumpbox${random_string.suffix.result}-nic"
+	name                = "${local.prefix}jumpbox${local.index}-nic"
 	location            = var.resource_group.location
 	resource_group_name = var.resource_group.name
 
@@ -142,7 +146,7 @@ resource "azurerm_subnet_network_security_group_association" "example" {
 }
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
-	name                = "${local.prefix}jumpbox${random_string.suffix.result}"
+	name                = "${local.prefix}jumpbox${local.index}"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
 	size                = var.vm_size
@@ -170,7 +174,7 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 
 	admin_ssh_key {
 		username   = var.admin_username
-		public_key = file(local.ssh_key)
+		public_key = var.ssh_key
 	}
 
 	os_disk {

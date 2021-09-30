@@ -25,7 +25,6 @@ variable "admin_username" {
 
 variable "ssh_key" {
   type = string
-  default = "~/.ssh/id_rsa"
 }
 
 variable "admin_subnet_prefix" {

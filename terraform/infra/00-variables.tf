@@ -1,7 +1,7 @@
-variable "prefix" {
-  type = string
-  default = "rk"
-}
+# variable "prefix" {
+#   type = string
+#   default = "rk"
+# }
 
 variable "subId1" {
   type = string
@@ -18,11 +18,6 @@ variable "global_address_space" {
 
 variable "domain" {
   type = string
-}
-
-variable "ssh_key" {
-  type = string
-  default = "~/.ssh/id_rsa"
 }
 
 variable "admin_email" {

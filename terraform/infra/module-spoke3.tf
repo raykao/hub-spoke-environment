@@ -4,11 +4,11 @@ module spoke3 {
 	providers = {
 		azurerm = azurerm.sub2
 	}
-	prefix = local.prefix
+	prefix = "${local.prefix}s3"
 	location = "eastus"
-	contributor_msi = module.global.contributor_msi
+	# contributor_msi = local.global.contributor_msi
 	admin_username = local.admin_username
-	ssh_key = "${path.module}/certs/${terraform.workspace}/global/id_rsa.pub"
+	ssh_key = local.global.public_key
 	address_space = cidrsubnet(var.global_address_space, 8, 3)
 	domain = var.domain
 	hub = {
@@ -17,7 +17,7 @@ module spoke3 {
 	admin_email = var.admin_email
 }
 
-resource "azurerm_virtual_network_peering" "hubtospoke3" {	
+resource "azurerm_virtual_network_peering" "hubtospoke3" {
 	provider = azurerm.sub1
 	name                      = "hubtospoke3"
 	resource_group_name       = module.hub.resource_group.name

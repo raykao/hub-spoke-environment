@@ -4,9 +4,9 @@ module spoke1 {
 	providers = {
 		azurerm = azurerm.sub1
 	}
-	prefix = local.prefix
+	prefix = "${local.prefix}s1"
 	location = "canadacentral"
-	contributor_msi = module.global.contributor_msi
+	contributor_msi = local.global.contributor_msi
 	admin_username = local.admin_username
 	address_space = cidrsubnet(var.global_address_space, 8, 1)
 	domain = var.domain

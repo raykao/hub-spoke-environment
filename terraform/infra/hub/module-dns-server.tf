@@ -1,5 +1,5 @@
 module "dns" {
-  source = "../modules/bind9"
+  source = "../../modules/bind9"
   prefix = local.prefix
   vnet_address_spaces = [var.global_address_space]
   subnet_id = azurerm_subnet.dns.id

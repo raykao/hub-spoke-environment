@@ -17,7 +17,6 @@ variable "admin_username" {
 
 variable "ssh_key" {
 	type = string
-	default = "~/.ssh/id_rsa"
 }
 
 variable "address_space" {

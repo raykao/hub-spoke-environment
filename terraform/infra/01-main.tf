@@ -2,7 +2,7 @@ terraform {
 	required_providers {
 		azurerm = {
 			source = "hashicorp/azurerm"
-			version = "~> 2.70.0"
+			version = "~> 2.78.0"
 		}
 	}
 }
@@ -19,8 +19,17 @@ provider azurerm {
 	features {}
 }
 
+data terraform_remote_state global {
+	backend= "local"
+
+	config = {
+		path = "${path.module}/global/terraform.tfstate"
+	}
+}
+
 locals {
-  prefix = "${var.prefix}demoenv"
+	global = data.terraform_remote_state.global.outputs
+  prefix = local.global.prefix
   location = "eastus"
-  admin_username = "${var.prefix}admin"
+  admin_username = "${local.prefix}admin"
 }

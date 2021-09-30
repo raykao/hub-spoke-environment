@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "spoke2" {
-	name = "${local.prefix}spoke2"
+	name = "${local.prefix}"
 	location = var.location
 }
 
