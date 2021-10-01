@@ -16,9 +16,3 @@ output hub {
 		}
 	}
 }
-
-output spoke3 {
-	value = {
-		jumpbox = module.spoke3.jumpbox
-	}
-}

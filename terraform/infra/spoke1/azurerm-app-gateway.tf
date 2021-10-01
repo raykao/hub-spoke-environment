@@ -4,6 +4,7 @@ resource "azurerm_public_ip" "aks1" {
   location            = azurerm_resource_group.spoke1.location
 	sku = "Standard"
   allocation_method   = "Static"
+  domain_name_label   = "${local.prefix}-appgw-aks1"
 }
 
 resource "azurerm_application_gateway" "aks1" {
@@ -34,7 +35,7 @@ resource "azurerm_application_gateway" "aks1" {
 
   backend_address_pool {
     name = "aks1-cluster-bepool"
-		ip_addresses = [cidrhost(azurerm_subnet.aks1.address_prefixes[0], 4)]
+		ip_addresses = [cidrhost(azurerm_subnet.aks-ilb.address_prefixes[0], 4)]
   }
 
   backend_http_settings {
@@ -44,6 +45,7 @@ resource "azurerm_application_gateway" "aks1" {
     port                  = 80
     protocol              = "Http"
     request_timeout       = 60
+    probe_name            = "basic-custom-probe"
   }
 
   http_listener {
@@ -60,17 +62,15 @@ resource "azurerm_application_gateway" "aks1" {
     backend_address_pool_name  = "aks1-cluster-bepool"
     backend_http_settings_name = "http"
   }
+
+  probe {
+    host = "10.1.4.4"
+    name = "basic-custom-probe"
+    port = "80"
+    path = "/healthz"
+    protocol = "Http"
+    interval = 30
+    timeout = 30
+    unhealthy_threshold = 3
+  }
 }
-
-
-
-# # #&nbsp;since these variables are re-used - a locals block makes this more maintainable
-# # locals {
-# #   backend_address_pool_name      = "${azurerm_virtual_network.aks1.name}-beap"
-# #   frontend_port_name             = "${azurerm_virtual_network.aks1.name}-feport"
-# #   frontend_ip_configuration_name = "${azurerm_virtual_network.aks1.name}-feip"
-# #   http_setting_name              = "${azurerm_virtual_network.aks1.name}-be-htst"
-# #   listener_name                  = "${azurerm_virtual_network.aks1.name}-httplstn"
-# #   request_routing_rule_name      = "${azurerm_virtual_network.aks1.name}-rqrt"
-# #   redirect_configuration_name    = "${azurerm_virtual_network.aks1.name}-rdrcfg"
-# # }
