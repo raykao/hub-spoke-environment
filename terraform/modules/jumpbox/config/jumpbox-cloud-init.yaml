@@ -14,6 +14,11 @@ packages:
   - firefox
   - gnupg2
   - unzip
+  - ca-certificates
+  - curl 
+  - apt-transport-https 
+  - lsb-release
+  - gnupg
 snap:
   commands:
     - 'snap install --classic kubectl'
@@ -36,6 +41,7 @@ write_files:
 
       export PATH=$PATH:/usr/local/go/bin
       alias docker=podman
+      alias k=kubectl
     permissions: '0640'
 runcmd:
   # change default SSH port
@@ -65,7 +71,10 @@ runcmd:
   - 'systemctl enable xrdp'
   - 'systemctl restart xrdp'
   # Install Azure CLI
-  - curl -L https://aka.ms/InstallAzureCli | bash
+  - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null; AZ_REPO=$(lsb_release -cs); echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
+  - apt-get update
+  - apt-get install azure-cli
+  # - curl -L https://aka.ms/InstallAzureCli | bash
   # Install Terraform
   - cd /usr/local/bin; wget -o terraform.zip https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip; unzip terraform.zip && rm terraform.zip
   - cd /tmp; wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz; tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz

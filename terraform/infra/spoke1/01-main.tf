@@ -9,4 +9,5 @@ terraform {
 
 locals {
 	prefix = var.prefix
+	region = "spoke1"
 }

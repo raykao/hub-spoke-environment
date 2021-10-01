@@ -25,11 +25,12 @@ Notes:
 - User Assigned Managed Identity: The Jumpbox is assigned a User MSI that has contributor rights over the initial resource groups (hub, spoke1, spoke2, spoke3)
 
 ### Setting up XRDP
-xrdp is installed by default (see Jumpbox OS Configs above).  However you still need to enter a password for your default user account or create one that can login via password as XRDP requires password auth for the GUI session.  To do so ```ssh``` into your your jumpbox in the hub network. run:
+xrdp is installed by default (see Jumpbox OS Configs above).  However you still need to enter a password for your default user account or create one that can login via password as XRDP requires password auth for the GUI session.  To do so ```ssh``` into your your jumpbox in the hub network and set your admin_user's password.  This does not disable ssh passwordless authentication but is needed when loging into the GUI session. run:
 
 ```bash
 ## Example Only
 ssh -p 2022 -i ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}
+
 
 ## You can get this command as it's been added to Terraform outputs for convenience
 terraform output
@@ -41,6 +42,9 @@ hub = {
     "ip_address" = "52.xxx.xxx.102"
   }
   "ssh" = "ssh -p 2022 -i ./certs/default/global/id_rsa admin_username@52.xxx.xxx.102"
-  "xrdp_tunnel" = "ssh -L 3389:localhost:3389 -p 2022 -i ./certs/default/global/id_rsa admin_username@52.xxx.xxx.102"
 }
+
+## then change password for your admin_username
+sudo passwd ${admin_username}
+
 ```
