@@ -62,6 +62,7 @@ kubectl apply -f tf-deploy.yaml
 helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx \
 		--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal"=true \
 		--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal-subnet"=AksIlbSubnet \
+		--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=${prefix}${region}${clusterNumber} \
 		--set controller.service.loadBalancerIp="10.1.4.4"
 
 ## Install Certbot
