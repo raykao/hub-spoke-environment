@@ -32,3 +32,14 @@ resource "azurerm_virtual_network_peering" "spoke3tohub" {
 	virtual_network_name      = module.spoke3.vnet.name
 	remote_virtual_network_id = module.hub.vnet.id
 }
+
+
+resource "azurerm_dns_ns_record" "spoke3" {
+  provider = azurerm.sub1
+  name = "spoke3"
+  zone_name           = module.global.public_dns_zone.name
+  resource_group_name = module.global.public_dns_zone.resource_group_name
+  ttl                 = 30
+
+  records = module.spoke3.public_dns_zone.name_servers
+}

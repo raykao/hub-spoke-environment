@@ -13,3 +13,7 @@ output jumpbox {
 		ssh					= "ssh -p 2022 ${var.admin_username}@${module.jumpbox.ip}"
 	}
 }
+
+output public_dns_zone {
+	value = azurerm_dns_zone.spoke3
+}

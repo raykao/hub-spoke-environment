@@ -6,6 +6,6 @@ output resource_group {
 	value = azurerm_resource_group.spoke1
 }
 
-output dnszone {
-	value = azurerm_private_dns_zone_virtual_network_link.spoke1.id
+output public_dns_zone {
+	value = azurerm_dns_zone.spoke1
 }

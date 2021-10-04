@@ -11,3 +11,6 @@ locals {
 	prefix = var.prefix
 	region = "spoke1"
 }
+
+data "azurerm_subscription" "current" {
+}

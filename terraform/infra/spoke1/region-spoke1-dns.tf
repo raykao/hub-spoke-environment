@@ -1,10 +1,15 @@
 # resource "azurerm_dns_zone" "spoke1" {
-# 	name                = "spoke1.${var.domain}"
+# 	name                = "${local.region}.${var.domain}"
 # 	resource_group_name = azurerm_resource_group.spoke1.name
 # }
 
+resource "azurerm_dns_zone" "spoke1" {
+	name                = "${local.region}.${var.domain}"
+	resource_group_name = azurerm_resource_group.spoke1.name
+}
+
 resource "azurerm_private_dns_zone" "spoke1" {
-	name                = "spoke1.${var.domain}"
+	name                = "${local.region}.${var.domain}"
 	resource_group_name = azurerm_resource_group.spoke1.name
 }
 

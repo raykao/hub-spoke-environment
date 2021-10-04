@@ -18,6 +18,10 @@ output "private_dns_zone" {
 	value = azurerm_private_dns_zone.global
 }
 
+output "public_dns_zone" {
+	value = azurerm_dns_zone.global
+}
+
 output "admin_email" {
 	value = var.admin_email
 }

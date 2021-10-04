@@ -60,10 +60,10 @@ kubectl apply -f tf-deploy.yaml
 
 ## Ingress Controller
 helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx \
-		--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal"=true \
-		--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal-subnet"=AksIlbSubnet \
-		--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=${prefix}${region}${clusterNumber} \
-		--set controller.service.loadBalancerIp="10.1.4.4"
+	--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal"=true \
+	--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal-subnet"=AksIlbSubnet \
+	--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=${prefix}${region}${clusterNumber} \
+	--set controller.service.loadBalancerIp="10.1.4.4"
 
 ## Install Certbot
 helm repo add jetstack https://charts.jetstack.io
@@ -76,3 +76,8 @@ helm install \
   --version v1.5.3 \
   --set installCRDs=true
 
+kubectl create ns ingress-nginx
+
+helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx \
+--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="$RG-aks1" \
+--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"=$RG
