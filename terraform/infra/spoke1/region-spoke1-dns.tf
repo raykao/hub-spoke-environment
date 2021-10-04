@@ -9,7 +9,7 @@ resource "azurerm_dns_zone" "spoke1" {
 }
 
 resource "azurerm_private_dns_zone" "spoke1" {
-	name                = "${local.region}.${var.domain}"
+	name                = "${local.region}.internal.${var.domain}"
 	resource_group_name = azurerm_resource_group.spoke1.name
 }
 

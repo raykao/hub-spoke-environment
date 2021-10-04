@@ -4,6 +4,6 @@ resource "azurerm_dns_zone" "global" {
 }
 
 resource "azurerm_private_dns_zone" "global" {
-	name                = "${var.domain}"
+	name                = "internal.${var.domain}"
 	resource_group_name = azurerm_resource_group.global.name
 }

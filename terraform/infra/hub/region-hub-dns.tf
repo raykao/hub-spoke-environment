@@ -1,5 +1,5 @@
 resource "azurerm_private_dns_zone" "hub" {
-	name                = "hub.${var.domain}"
+	name                = "${local.region}.internal.${var.domain}"
 	resource_group_name = azurerm_resource_group.hub.name
 }
 
