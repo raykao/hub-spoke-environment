@@ -5,3 +5,8 @@ subId2 = ""
 domain = ""
 global_address_space = "10.0.0.0/8" ## you can use whatever address space you want...but it does expect a /8 cidr
 admin_email = ""
+admin_groups = {
+	aks = {
+		object_id = ""
+	}
+}

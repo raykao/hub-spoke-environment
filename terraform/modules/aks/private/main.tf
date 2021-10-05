@@ -26,6 +26,11 @@ variable "suffix" {
   type = string
 }
 
+variable "admin_group_object_ids" {
+	type = list
+	default = []
+}
+
 locals {
   cluster_name = "${var.prefix}-${var.type}-cluster-${var.suffix}"
 }
@@ -53,6 +58,14 @@ resource azurerm_kubernetes_cluster default {
 		user_assigned_identity_id = var.user_msi_id
 	}
 
+	role_based_access_control {
+		enabled = true
+		azure_active_directory {
+			managed = true
+			admin_group_object_ids = var.admin_group_object_ids
+			azure_rbac_enabled = true
+		}
+	}
 
 	network_profile {
 		network_plugin     = "azure"

@@ -31,11 +31,11 @@ resource "azurerm_role_assignment" "aks2-contributor" {
 	principal_id         = azurerm_user_assigned_identity.aks2.principal_id
 }
 
-resource "time_sleep" "aks_role_assignments" {
+resource "time_sleep" "aks2_role_assignments" {
   depends_on = [
-        azurerm_role_assignment.aks-dns,
-        azurerm_role_assignment.aks1-network-contrib,
-		azurerm_role_assignment.aks1-contributor,
+        azurerm_role_assignment.aks2-dns,
+        azurerm_role_assignment.aks2-network-contrib,
+		azurerm_role_assignment.aks2-contributor,
 	]
 
   create_duration = "30s"
@@ -44,7 +44,7 @@ resource "time_sleep" "aks_role_assignments" {
 
 module aks2 {
 	depends_on = [
-	  time_sleep.aks_role_assignments
+	  time_sleep.aks2_role_assignments
 	]
 	
 	source = "../../modules/aks/private"
@@ -55,4 +55,5 @@ module aks2 {
 	subnet_id = azurerm_subnet.aks2.id
 	private_dns_zone_id = azurerm_private_dns_zone.aks.id
 	user_msi_id =  azurerm_user_assigned_identity.aks2.id
+	admin_group_object_ids = var.admin_groups.aks
 }

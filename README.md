@@ -10,6 +10,11 @@ This is a demo environment to setup a baseline to deploy a multi-subscription hu
 - run ```terraform```
 	- ``` terraform init && terraform plan -out tfplan && terraform apply tfplan```
 
+## Requirements
+- Terraform
+- Azure CLI
+- Helm
+
 ## Jumpbox configs
 ```${repo_root}/terraform/infra/modules/jumpbox/```
 

@@ -18,6 +18,7 @@ resource "azurerm_subnet" "aks1" {
 	resource_group_name  = azurerm_resource_group.spoke.name
 	virtual_network_name = azurerm_virtual_network.spoke.name
 	address_prefixes     = [cidrsubnet(azurerm_virtual_network.spoke.address_space[0], 6, 1)]
+	enforce_private_link_endpoint_network_policies = true
 }
 
 resource "azurerm_subnet" "jumpbox" {

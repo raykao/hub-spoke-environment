@@ -13,6 +13,7 @@ module spoke1 {
 	hub = {
 		vnet = module.hub.vnet
 	}
+	admin_groups = var.admin_groups
 }
 
 resource "azurerm_virtual_network_peering" "hubtospoke1" {	

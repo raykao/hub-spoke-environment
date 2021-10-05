@@ -25,3 +25,6 @@ variable "domain" {
 
 variable "hub" {
 }
+
+variable "admin_groups" {
+}

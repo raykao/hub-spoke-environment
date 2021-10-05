@@ -36,3 +36,7 @@ variable "hub" {
 variable "admin_email" {
 	type = string
 }
+
+variable "admin_groups" {
+	
+}
