@@ -1,0 +1,131 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - apt-transport-https
+  - gnupg2
+  - unzip
+  - ca-certificates
+  - curl 
+  - apt-transport-https 
+  - lsb-release
+  - gnupg
+snap:
+  commands:
+users:
+  - default
+  - name: consul
+    primary_group: consul
+    groups: consul
+    ssh_authorized_keys:
+        - ${ssh_pub_key}
+write_files:
+  - path: /etc/skel/.bash_profile
+    content: |
+      if [ -f ~/.bashrc ]; then
+          source ~/.bashrc
+      fi
+    permissions: '0640'
+
+  - path: /opt/consul/config/acl.json
+    content: |
+      {
+        "acl": {
+          "enabled": true,
+          "default_policy": "deny",
+          "down_policy": "extend-cache",
+          "enable_token_persistence": true
+        }
+      }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /opt/consul/config/connect.json
+    content: |
+      {
+        "connect": {
+          "enabled": true
+        }
+      }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /opt/consul/config/consul.json
+    content: |
+      {
+        "data_dir": "/opt/consul/data",
+
+        "bind_addr": "{{ GetInterfaceIP \"eth0\" }}",
+        
+        "disable_anonymous_signature": true,
+        "disable_update_check": true
+      }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /opt/consul/config/ports.json
+    content: |
+      {
+        "ports": {
+          "grpc": 8502
+        }
+      }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /opt/consul/config/rpc.json
+    content: |
+      {
+        "encrypt_verify_incoming": true,
+        "encrypt_verify_outgoing": true
+      }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /opt/consul/config/server.json
+    content: |
+      {
+        "server": false,
+        "ui": false
+        }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /opt/consul/config/tls.json
+    content: |
+      {
+        "verify_server_hostname": true,
+        "ca_file": "/opt/consul/config/ssl/consul-agent-ca.pem"
+      }
+    permissions: '0640'
+    owner: consul:consul
+
+  - path: /etc/systemd/system/consul.service
+    content: |
+      [Unit]
+      Description="HashiCorp Consul - Service Mesh Made Easy"
+      Documentation=https://www.consul.io/
+      Requires=network-online.target
+      After=network-online.target
+      ConditionFileNotEmpty=/opt/consul/config/consul.json
+
+      [Service]
+      User=consul
+      Group=consul
+
+      ExecStart=/usr/bin/consul -config-dir=/opt/consul/config/
+      # Reload necessary for services to start on Agent Nodes
+      # See Issue 6521: https://github.com/hashicorp/consul/issues/6521
+      ExecStartPost=/usr/bin/consul reload
+
+      ExecReload=/usr/bin/consul reload
+      KillMode=process
+      Restart=on-failure
+      LimitNOFILE=65536
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  - curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+  - apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  - apt-get update && apt-get install consul

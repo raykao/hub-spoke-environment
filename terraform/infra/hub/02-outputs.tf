@@ -15,3 +15,7 @@ output jumpbox {
 		
 	}
 }
+
+output admin_subnet {
+	value = azurerm_subnet.jumpbox
+}
