@@ -313,6 +313,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 		disk_size_gb 			= "1024"
 	}
 
+  data_disk {
+    lun = 0
+    disk_size_gb = 20
+    caching = "ReadOnly"
+    storage_account_type = "StandardSSD_LRS"
+  }
+
 	source_image_reference {
 		publisher = "Canonical"
 		offer     = "0001-com-ubuntu-server-focal"

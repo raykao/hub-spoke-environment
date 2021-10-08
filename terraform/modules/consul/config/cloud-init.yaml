@@ -18,6 +18,25 @@ users:
     groups: consul
     ssh_authorized_keys:
         - ${ssh_pub_key}
+disk_setup:
+  /dev/disk/azure/scsi1/lun0:
+    table_type: gpt
+    layout: true
+    overwrite: false
+
+fs_setup:
+  - device: /dev/disk/azure/scsi1/lun0
+    partition: 1
+    filesystem: ext4
+
+mounts:
+  - [
+      "/dev/disk/azure/scsi1/lun0-part1",
+      "/opt/consul",
+      auto,
+      "defaults,noexec,nofail",
+    ]
+
 write_files:
   - path: /etc/skel/.bash_profile
     content: |
@@ -26,7 +45,7 @@ write_files:
       fi
     permissions: '0640'
 
-  - path: /opt/consul/config/acl.json
+  - path: /tmp/consul/config/acl.json
     content: |
       {
         "acl": {
@@ -37,9 +56,8 @@ write_files:
         }
       }
     permissions: '0640'
-    owner: consul:consul
 
-  - path: /opt/consul/config/connect.json
+  - path: /tmp/consul/config/connect.json
     content: |
       {
         "connect": {
@@ -47,9 +65,8 @@ write_files:
         }
       }
     permissions: '0640'
-    owner: consul:consul
 
-  - path: /opt/consul/config/consul.json
+  - path: /tmp/consul/config/consul.json
     content: |
       {
         "data_dir": "/opt/consul/data",
@@ -60,9 +77,8 @@ write_files:
         "disable_update_check": true
       }
     permissions: '0640'
-    owner: consul:consul
 
-  - path: /opt/consul/config/ports.json
+  - path: /tmp/consul/config/ports.json
     content: |
       {
         "ports": {
@@ -70,9 +86,8 @@ write_files:
         }
       }
     permissions: '0640'
-    owner: consul:consul
 
-  - path: /opt/consul/config/rpc.json
+  - path: /tmp/consul/config/rpc.json
     content: |
       {
         "encrypt_verify_incoming": true,
@@ -81,23 +96,21 @@ write_files:
     permissions: '0640'
     owner: consul:consul
 
-  - path: /opt/consul/config/server.json
+  - path: /tmp/consul/config/server.json
     content: |
       {
         "server": false,
         "ui": false
-        }
+      }
     permissions: '0640'
-    owner: consul:consul
 
-  - path: /opt/consul/config/tls.json
+  - path: /tmp/consul/config/tls.json
     content: |
       {
         "verify_server_hostname": true,
-        "ca_file": "/opt/consul/config/ssl/consul-agent-ca.pem"
+        "ca_file": tmpopt/consul/config/ssl/consul-agent-ca.pem"
       }
     permissions: '0640'
-    owner: consul:consul
 
   - path: /etc/systemd/system/consul.service
     content: |
@@ -106,13 +119,13 @@ write_files:
       Documentation=https://www.consul.io/
       Requires=network-online.target
       After=network-online.target
-      ConditionFileNotEmpty=/opt/consul/config/consul.json
+      ConditionFileNotEmptytmpopt/consul/config/consul.json
 
       [Service]
       User=consul
       Group=consul
 
-      ExecStart=/usr/bin/consul -config-dir=/opt/consul/config/
+      ExecStart=/usr/bin/consul -config-dirtmpopt/consul/config/
       # Reload necessary for services to start on Agent Nodes
       # See Issue 6521: https://github.com/hashicorp/consul/issues/6521
       ExecStartPost=/usr/bin/consul reload
@@ -124,8 +137,12 @@ write_files:
 
       [Install]
       WantedBy=multi-user.target
-
+    permissions: '0622'
 runcmd:
   - curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+  - mkdir /opt/consul/data
+  - cp -r /tmp/consul/config /opt/consul
+  - chown -R consul:consul /opt/consul
+  - chmod -R 620 /opt/consul
   - apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
   - apt-get update && apt-get install consul
