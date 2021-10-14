@@ -19,6 +19,35 @@ resource azurerm_subnet firewall {
 	address_prefixes     = [cidrsubnet(var.address_space, 10, 0)]
 }
 
+resource azurerm_subnet consul {
+  name = "ConsulSubnet"
+  resource_group_name =  azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes = [cidrsubnet(var.address_space, 13, 8)]
+}
+
+resource azurerm_subnet nomad {
+  name = "NomadSubnet"
+  resource_group_name =  azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes = [cidrsubnet(var.address_space, 13, 9)]
+}
+
+resource azurerm_subnet vault {
+  name = "VaultSubnet"
+  resource_group_name =  azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes = [cidrsubnet(var.address_space, 12, 6)]
+	service_endpoints    = ["Microsoft.Storage"]
+}
+
+resource azurerm_subnet prometheus {
+  name = "PrometheusSubnet"
+  resource_group_name =  azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes = [cidrsubnet(var.address_space, 13, 11)]
+}
+
 resource azurerm_subnet vpn {
 	name = "GatewaySubnet"
 	resource_group_name  = azurerm_resource_group.hub.name
@@ -31,34 +60,6 @@ resource azurerm_subnet dns {
   resource_group_name =  azurerm_resource_group.hub.name
   virtual_network_name = azurerm_virtual_network.hub.name
   address_prefixes = [local.bind9_address_space]
-}
-
-resource azurerm_subnet prometheus {
-  name = "PrometheusSubnet"
-  resource_group_name =  azurerm_resource_group.hub.name
-  virtual_network_name = azurerm_virtual_network.hub.name
-  address_prefixes = [cidrsubnet(var.address_space, 8, 3)]
-}
-
-resource azurerm_subnet consul {
-  name = "ConsulSubnet"
-  resource_group_name =  azurerm_resource_group.hub.name
-  virtual_network_name = azurerm_virtual_network.hub.name
-  address_prefixes = [cidrsubnet(var.address_space, 8, 4)]
-}
-
-resource azurerm_subnet vault {
-  name = "VaultSubnet"
-  resource_group_name =  azurerm_resource_group.hub.name
-  virtual_network_name = azurerm_virtual_network.hub.name
-  address_prefixes = [cidrsubnet(var.address_space, 8, 5)]
-}
-
-resource azurerm_subnet nomad {
-  name = "NomadSubnet"
-  resource_group_name =  azurerm_resource_group.hub.name
-  virtual_network_name = azurerm_virtual_network.hub.name
-  address_prefixes = [cidrsubnet(var.address_space, 8, 6)]
 }
 
 resource azurerm_subnet jumpbox {

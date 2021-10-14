@@ -26,18 +26,41 @@ variable "ssh_key" {
 	type = string
 }
 
-variable "user_msi" {
-  type = string
-  default = ""
-}
-
 variable "admin_subnet" {
 
 }
 
+data "azurerm_client_config" "current" {}
+
 locals {
   prefix = var.prefix
   vm_name = "${local.prefix}-consul-server"
+  tenant_id = var.tenant_id != "" ? var.tenant_id : data.azurerm_client_config.current.tenant_id
+}
+
+resource "random_id" "encrpyt_key" {
+  byte_length = 32
+}
+
+resource "azurerm_user_assigned_identity" "consul" {
+  name                = "${local.prefix}-consul-server-identity"
+  resource_group_name = var.resource_group.name
+  location            = var.resource_group.location
+}
+
+resource "azurerm_role_assignment" "consul" {
+  scope                = var.resource_group.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_user_assigned_identity.consul.principal_id
+}
+
+resource "azurerm_key_vault" "consul" {
+	
+	name                = "${local.prefix}consulkeyvault"
+	location            = var.resource_group.location
+	resource_group_name = var.resource_group.name
+	tenant_id           = local.tenant_id
+	sku_name            = "premium"
 }
 
 resource "azurerm_network_security_group" "default" {  
@@ -59,7 +82,7 @@ resource "azurerm_network_security_group" "default" {
 
 	security_rule {
     name                       = "lan-tcp"
-    priority                   = 101
+    priority                   = 110
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -71,7 +94,7 @@ resource "azurerm_network_security_group" "default" {
 
 	security_rule {
     name                       = "lan-udp"
-    priority                   = 102
+    priority                   = 120
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Udp"
@@ -83,7 +106,7 @@ resource "azurerm_network_security_group" "default" {
 
 	security_rule {
     name                       = "wan-tcp"
-    priority                   = 103
+    priority                   = 130
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -95,7 +118,7 @@ resource "azurerm_network_security_group" "default" {
 	
 	security_rule {
     name                       = "wan-udp"
-    priority                   = 104
+    priority                   = 140
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Udp"
@@ -107,7 +130,7 @@ resource "azurerm_network_security_group" "default" {
 
 	security_rule {
     name                       = "http-tcp-only"
-    priority                   = 105
+    priority                   = 150
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -117,9 +140,33 @@ resource "azurerm_network_security_group" "default" {
     destination_address_prefix = "*"
   }
 
+  security_rule {
+    name                       = "https-tcp-only"
+    priority                   = 151
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8501"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "grpc-tcp-only"
+    priority                   = 152
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8502"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
 	security_rule {
     name                       = "dns-tcp"
-    priority                   = 106
+    priority                   = 170
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -131,7 +178,7 @@ resource "azurerm_network_security_group" "default" {
 
 	security_rule {
     name                       = "dns-udp"
-    priority                   = 107
+    priority                   = 180
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Udp"
@@ -143,7 +190,7 @@ resource "azurerm_network_security_group" "default" {
 
   security_rule {
     name                       = "admin-ssh"
-    priority                   = 200
+    priority                   = 190
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -155,7 +202,7 @@ resource "azurerm_network_security_group" "default" {
 
   security_rule {
     name                       = "ssh-deny"
-    priority                   = 201
+    priority                   = 200
     direction                  = "Inbound"
     access                     = "Deny"
     protocol                   = "*"
@@ -292,14 +339,15 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 		templatefile("${path.module}/config/cloud-init.yaml", 
 		{ 
       ssh_pub_key = var.ssh_key
+      encrpyt_key = random_id.encrypt_key.b64_std
 		}
 	))
 	
 	identity {
-		type = var.user_msi == "" ? "SystemAssigned" : "UserAssigned"
-		identity_ids = var.user_msi == "" ? [] : [
-			var.user_msi
-		]	
+		type = "UserAssigned"
+		identity_ids = [
+      azurerm_user_assigned_identity.consul.id
+    ]
 	}
 
 	admin_ssh_key {
@@ -310,7 +358,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 	os_disk {
 		caching              	= "ReadOnly"
 		storage_account_type 	= "Premium_LRS"
-		disk_size_gb 			= "1024"
+		disk_size_gb 			= "20"
 	}
 
   data_disk {

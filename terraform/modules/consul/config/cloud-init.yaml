@@ -86,12 +86,41 @@ write_files:
         }
       }
     permissions: '0640'
+  
+  - path: /tmp/consul/config/ports.json
+    content: |
+      {
+        "ports": {
+          "grpc": 8502
+        }
+      }
+    permissions: '0640'
 
-  - path: /tmp/consul/config/rpc.json
+  - path: /tmp/consul/config/ssl/consul-agent-ca.pem
+    encoding: b64
+    content: ${var.consul_agent_ca}
+    permissions: '0620'
+  - path: /tmp/consul/config/ssl/hub-server-consul-0.pem
+    encoding: b64
+    content: ${var.server-cert-pem}
+    permissions: '0620'
+  - path: /tmp/consul/config/ssl/hub-server-consul-0-key.pem
+    encoding: b64
+    content: ${var.server-key-pem}
+    permissions: '0620'
+
+  - path: /tmp/consul/config/encrypt.json
     content: |
       {
         "encrypt_verify_incoming": true,
-        "encrypt_verify_outgoing": true
+        "encrypt_verify_outgoing": true,
+        "encypt": "${var.encrypt_key}",
+        "ca_file": "/opt/consul/config/ssl/consul-agent-ca.pem",
+        "cert_file": "/opt/consul/config/ssl/hub-server-consul-0.pem",
+        "key_file": "/opt/consul/config/ssl/hub-server-consul-0-key.pem", 
+        "auto_encrypt": {
+          "allow_tls": true
+        }
       }
     permissions: '0640'
     owner: consul:consul
@@ -99,8 +128,8 @@ write_files:
   - path: /tmp/consul/config/server.json
     content: |
       {
-        "server": false,
-        "ui": false
+        "server": true,
+        "ui": true
       }
     permissions: '0640'
 
@@ -108,7 +137,7 @@ write_files:
     content: |
       {
         "verify_server_hostname": true,
-        "ca_file": tmpopt/consul/config/ssl/consul-agent-ca.pem"
+        "ca_file": /opt/consul/config/ssl/consul-agent-ca.pem"
       }
     permissions: '0640'
 
@@ -119,13 +148,13 @@ write_files:
       Documentation=https://www.consul.io/
       Requires=network-online.target
       After=network-online.target
-      ConditionFileNotEmptytmpopt/consul/config/consul.json
+      ConditionFileNotEmpty=/opt/consul/config/consul.json
 
       [Service]
       User=consul
       Group=consul
 
-      ExecStart=/usr/bin/consul -config-dirtmpopt/consul/config/
+      ExecStart=/usr/bin/consul -config-dir=/opt/consul/config/
       # Reload necessary for services to start on Agent Nodes
       # See Issue 6521: https://github.com/hashicorp/consul/issues/6521
       ExecStartPost=/usr/bin/consul reload

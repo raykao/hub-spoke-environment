@@ -1,0 +1,40 @@
+#cloud-config
+users:
+  - default
+  - name: vault
+    primary_group: vault
+    ssh_authorized_keys:
+      - ${ssh_key}
+write_files:
+  - path: /opt/vault/run.sh
+    content: |
+      #! /bin/bash
+
+      export IP_ADDRESS=$(hostname -I)
+      export VAULT_API_ADDR="https://$IP_ADDRESS:8200"
+
+      vault server -config=/opt/vault/config/server.hcl
+    permissions: '0700'
+  - path: /opt/vault/config/server.hcl
+    content: |
+      seal "azurekeyvault" {
+        tenant_id = ${var.tenant_id}
+        vault_name = ${var.vault_name}
+        key_name =  ${var.key_name}
+      }
+
+      storage "postgresql" {
+        connection_url = "postgres://${postgres_admin_username}:${postgres_admin_password}@${postgres_host}:5432/vault?sslmode=verify-full"
+      }
+      
+      listener "tcp" {
+        "address" = "0.0.0.0:8200",
+        "tls_disable" = true
+      }
+    permissions: '0600'
+runcmd:
+  - wget 
+  - chmod +x /opt/vault/run.sh
+  - chown -R vault:vault /opt/vault
+  - wget -O /tmp/vault.zip https://releases.hashicorp.com/vault/1.8.4/vault_1.8.4_linux_amd64.zip
+  - unzip /tmp/vault.zip -d /usr/local/bin/
