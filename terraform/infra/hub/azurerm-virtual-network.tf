@@ -37,7 +37,7 @@ resource azurerm_subnet vault {
   name = "VaultSubnet"
   resource_group_name =  azurerm_resource_group.hub.name
   virtual_network_name = azurerm_virtual_network.hub.name
-  address_prefixes = [cidrsubnet(var.address_space, 12, 6)]
+  address_prefixes = [cidrsubnet(var.address_space, 12, 7)]
 	service_endpoints    = ["Microsoft.Storage"]
 }
 

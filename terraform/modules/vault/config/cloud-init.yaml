@@ -18,9 +18,9 @@ write_files:
   - path: /opt/vault/config/server.hcl
     content: |
       seal "azurekeyvault" {
-        tenant_id = ${var.tenant_id}
-        vault_name = ${var.vault_name}
-        key_name =  ${var.key_name}
+        tenant_id = ${tenant_id}
+        vault_name = ${vault_name}
+        key_name =  ${key_name}
       }
 
       storage "postgresql" {
