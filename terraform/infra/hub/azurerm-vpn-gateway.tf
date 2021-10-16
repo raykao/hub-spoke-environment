@@ -62,6 +62,17 @@ data "local_file" "ca_der" {
 }
 
 resource "azurerm_virtual_network_gateway" "default" {
+  depends_on = [
+    azurerm_subnet.firewall,
+    azurerm_subnet.consul,
+    azurerm_subnet.nomad,
+    azurerm_subnet.vault,
+    azurerm_subnet.prometheus,
+    azurerm_subnet.vpn,
+    azurerm_subnet.dns,
+    azurerm_subnet.jumpbox,
+    azurerm_firewall.hub
+  ]
 	
   name                = "${local.prefix}-vpn"
   location            = azurerm_resource_group.hub.location
