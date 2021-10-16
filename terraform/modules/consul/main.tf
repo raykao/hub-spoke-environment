@@ -358,7 +358,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 	os_disk {
 		caching              	= "ReadOnly"
 		storage_account_type 	= "Premium_LRS"
-		disk_size_gb 			= "20"
+		disk_size_gb 			= "100"
 	}
 
   data_disk {
