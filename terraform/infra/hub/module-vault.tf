@@ -25,6 +25,7 @@ module "vault" {
   domain = azurerm_private_dns_zone.hub.name
   storage_account = azurerm_storage_account.vault
   pgsql_private_dns_zone_id = azurerm_private_dns_zone.pgsql.id
+  keyvault_private_dns_zone_id = azurerm_private_dns_zone.keyvault.id
 }
 
 resource "azurerm_private_dns_a_record" "vault" {

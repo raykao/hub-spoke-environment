@@ -23,7 +23,7 @@ write_files:
     content: |
       #! /bin/bash
 
-      export IP_ADDRESS=$(hostname -I)
+      export IP_ADDRESS=$(hostname -I | xargs)
       export VAULT_API_ADDR="https://$IP_ADDRESS:8200"
 
       vault server -config=/opt/vault/config/server.hcl
@@ -31,15 +31,18 @@ write_files:
   - path: /opt/vault/config/server.hcl
     content: |
       seal "azurekeyvault" {
-        tenant_id = ${tenant_id}
-        vault_name = ${vault_name}
-        key_name =  ${key_name}
+        tenant_id = "${tenant_id}"
+        vault_name = "${vault_name}"
+        key_name =  "${key_name}"
       }
 
       storage "postgresql" {
-        connection_url = "postgres://${postgres_admin_username}:${postgres_admin_password}@${postgres_host}:5432/vault?sslmode=verify-full"
+        connection_url = "postgresql://${postgres_host}:5432/vault?user=${postgres_admin_username}&password=${postgres_admin_password}&sslmode=require"
+        ha_enabled = "true"
       }
       
+      ui = true
+
       listener "tcp" {
         "address" = "0.0.0.0:8200",
         "tls_disable" = true
@@ -75,3 +78,4 @@ runcmd:
   - sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
   - apt-get update
   - apt-get install -y postgresql-client-11
+  - export PGPASSWORD="${postgres_admin_password}"; psql -h ${postgres_host} -p 5432 -d vault -U ${postgres_admin_username} -f /tmp/vault.sql

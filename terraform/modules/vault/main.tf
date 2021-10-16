@@ -55,6 +55,10 @@ variable "pgsql_private_dns_zone_id" {
   type = string
 }
 
+variable "keyvault_private_dns_zone_id" {
+  type = string
+}
+
 data "azurerm_client_config" "current" {}
 
 locals {
@@ -121,7 +125,7 @@ resource "azurerm_private_endpoint" "pgsql" {
 	subnet_id = var.subnet_id
 
   private_service_connection {
-    name = "${local.prefix}vault-privateserviceconnection"
+    name = "${local.prefix}vault-pgsql-privateserviceconnection"
     is_manual_connection = false
     private_connection_resource_id = azurerm_postgresql_server.vault.id
     subresource_names = ["postgresqlServer"]
@@ -130,6 +134,25 @@ resource "azurerm_private_endpoint" "pgsql" {
    private_dns_zone_group {
     name                  = "pgsql-dns-group"
     private_dns_zone_ids  = [ var.pgsql_private_dns_zone_id ]
+  }
+}
+
+resource "azurerm_private_endpoint" "keyvault" {
+	name = "${local.prefix}-pe-vault-keyvault-hub"
+	location = var.resource_group.location
+	resource_group_name = var.resource_group.name
+	subnet_id = var.subnet_id
+
+  private_service_connection {
+    name = "${local.prefix}vault-keyvault-privateserviceconnection"
+    is_manual_connection = false
+    private_connection_resource_id = azurerm_key_vault.default.id
+    subresource_names = ["vault"]
+  }
+
+   private_dns_zone_group {
+    name                  = "keyvault-dns-group"
+    private_dns_zone_ids  = [ var.keyvault_private_dns_zone_id ]
   }
 }
 
@@ -252,13 +275,13 @@ resource "azurerm_network_security_group" "default" {
   }
 
   security_rule {
-    name                       = "admin-ssh"
+    name                       = "allow-admin-all"
     priority                   = 190
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "22"
+    destination_port_range     = "*"
     source_address_prefix      = var.admin_subnet.address_prefixes[0]
     destination_address_prefix = "*"
   }
@@ -271,6 +294,18 @@ resource "azurerm_network_security_group" "default" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "psql-deny"
+    priority                   = 300
+    direction                  = "Inbound"
+    access                     = "Deny"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "5432"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -346,7 +381,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
       vault_name = azurerm_key_vault.default.name
       key_name = "vault"
 
-      postgres_admin_username = local.postgres_admin_username
+      postgres_admin_username = "${local.postgres_admin_username}@${azurerm_postgresql_server.vault.name}"
       postgres_admin_password = local.postgres_admin_password
       postgres_host           = azurerm_postgresql_server.vault.fqdn
 		}
