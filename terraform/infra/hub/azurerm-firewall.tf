@@ -80,14 +80,17 @@ resource "azurerm_firewall_application_rule_collection" "consul" {
     name = "ubuntuUpdates"
 
     source_addresses = [
-      azurerm_subnet.consul.address_prefixes[0]
+      azurerm_subnet.consul.address_prefixes[0],
+      azurerm_subnet.vault.address_prefixes[0],
+      azurerm_subnet.nomad.address_prefixes[0]
     ]
 
     target_fqdns  = [
 			"*.ubuntu.com",
 			"*.archive.ubuntu.com",
       "*.azure.archive.ubuntu.com",
-			"apt.releases.hashicorp.com"
+			"apt.releases.hashicorp.com",
+      "*.hashicorp.com"
     ]
 
     protocol {
@@ -100,19 +103,45 @@ resource "azurerm_firewall_application_rule_collection" "consul" {
     name = "ubuntuHttpUpdates"
 
     source_addresses = [
-      azurerm_subnet.consul.address_prefixes[0]
+      azurerm_subnet.consul.address_prefixes[0],
+      azurerm_subnet.vault.address_prefixes[0],
+      azurerm_subnet.nomad.address_prefixes[0]
     ]
 
     target_fqdns  = [
 			"*.ubuntu.com",
 			"*.archive.ubuntu.com",
       "*.azure.archive.ubuntu.com",
-			"apt.releases.hashicorp.com"
+			"apt.releases.hashicorp.com",
+      "*.hashicorp.com"
     ]
 
     protocol {
       port = "80"
 			type = "Http"
+		}
+  }
+
+  rule {
+    name = "vaultRequired"
+
+    source_addresses = [
+      azurerm_subnet.vault.address_prefixes[0],
+    ]
+
+    target_fqdns  = [
+			"*.postgresql.org",
+      "*.hashicorp.com"
+    ]
+
+    protocol {
+      port = "80"
+			type = "Http"
+		}
+
+    protocol {
+      port = "443"
+			type = "Https"
 		}
   }
 }
