@@ -51,6 +51,10 @@ variable "tenant_id" {
   default = ""
 }
 
+variable "pgsql_private_dns_zone_id" {
+  type = string
+}
+
 data "azurerm_client_config" "current" {}
 
 locals {
@@ -82,7 +86,7 @@ resource "random_id" "encrpyt_key" {
 
 
 resource "azurerm_postgresql_server" "vault" {
-  name                = "${local.prefix}-psqlserver"
+  name                = "${local.prefix}-vault-psqlserver"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
 
@@ -108,6 +112,25 @@ resource "azurerm_postgresql_database" "vault" {
   server_name         = azurerm_postgresql_server.vault.name
   charset             = "UTF8"
   collation           = "English_United States.1252"
+}
+
+resource "azurerm_private_endpoint" "pgsql" {
+	name = "${local.prefix}-pe-vault-pgsql-hub"
+	location = var.resource_group.location
+	resource_group_name = var.resource_group.name
+	subnet_id = var.subnet_id
+
+  private_service_connection {
+    name = "${local.prefix}vault-privateserviceconnection"
+    is_manual_connection = false
+    private_connection_resource_id = azurerm_postgresql_server.vault.id
+    subresource_names = ["postgresqlServer"]
+  }
+
+   private_dns_zone_group {
+    name                  = "pgsql-dns-group"
+    private_dns_zone_ids  = [ var.pgsql_private_dns_zone_id ]
+  }
 }
 
 resource "azurerm_user_assigned_identity" "vault" {
