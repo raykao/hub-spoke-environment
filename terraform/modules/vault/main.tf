@@ -89,17 +89,25 @@ resource "azurerm_postgresql_server" "vault" {
   administrator_login          = local.postgres_admin_username
   administrator_login_password = local.postgres_admin_password
 
-  sku_name   = "B_Gen4_2"
+  sku_name   = "GP_Gen5_2"
   version    = "11"
   storage_mb = 65536
 
-  backup_retention_days        = 7
-  geo_redundant_backup_enabled = true
-  auto_grow_enabled            = true
+  # backup_retention_days        = 7
+  geo_redundant_backup_enabled = false
+  auto_grow_enabled            = false
 
   public_network_access_enabled    = false
   ssl_enforcement_enabled          = true
   ssl_minimal_tls_version_enforced = "TLS1_2"
+}
+
+resource "azurerm_postgresql_database" "vault" {
+  name                = "vault"
+  resource_group_name = var.resource_group.name
+  server_name         = azurerm_postgresql_server.vault.name
+  charset             = "UTF8"
+  collation           = "English_United States.1252"
 }
 
 resource "azurerm_user_assigned_identity" "vault" {
@@ -310,7 +318,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 	custom_data = base64encode(
 		templatefile("${path.module}/config/cloud-init.yaml", 
 		{ 
-      ssh_key = var.ssh_key
+      ssh_key = trimspace(var.ssh_key)
       tenant_id = local.tenant_id
       vault_name = azurerm_key_vault.default.name
       key_name = "vault"
@@ -336,7 +344,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 	os_disk {
 		caching              	= "ReadOnly"
 		storage_account_type 	= "Premium_LRS"
-		disk_size_gb 			= "20"
+		disk_size_gb 			= "100"
 	}
 
   data_disk {
