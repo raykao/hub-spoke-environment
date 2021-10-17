@@ -245,6 +245,82 @@ resource "azurerm_key_vault_access_policy" "vault" {
 	]
 }
 
+
+resource "azurerm_key_vault_access_policy" "admin" {
+	
+	key_vault_id = azurerm_key_vault.default.id
+	tenant_id    = local.tenant_id
+	object_id    = data.azurerm_client_config.current.object_id
+  
+	certificate_permissions = [
+		"Backup",
+		"Create",
+		"Delete",
+		"DeleteIssuers",
+		"Get",
+		"GetIssuers",
+		"Import",
+		"List",
+		"ListIssuers",
+		"ManageContacts",
+		"ManageIssuers",
+		"Purge",
+		"Recover",
+		"Restore",
+		"SetIssuers",
+		"Update"
+	]
+
+	key_permissions = [
+		"Backup",
+		"Create",
+		"Decrypt",
+		"Delete",
+		"Encrypt",
+		"Get",
+		"Import",
+		"List",
+		"Purge",
+		"Recover",
+		"Restore",
+		"Sign",
+		"UnwrapKey",
+		"Update",
+		"Verify",
+		"WrapKey"
+	]
+
+	secret_permissions = [
+		"Backup",
+		"Delete",
+		"Get",
+		"List",
+		"Purge",
+		"Recover",
+		"Restore",
+		"Set"
+	]
+}
+
+resource "azurerm_key_vault_key" "vault" {
+  depends_on = [
+    azurerm_key_vault_access_policy.admin
+  ]
+  name         = "vault"
+  key_vault_id = azurerm_key_vault.default.id
+  key_type     = "RSA"
+  key_size     = 2048
+
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
+}
+
 resource "azurerm_network_security_group" "default" {  
 	name                = "vaultNSG"
     location            = var.resource_group.location
