@@ -19,6 +19,11 @@ users:
     ssh_authorized_keys:
       - ${ssh_key}
 write_files:
+  - path: /etc/systemd/system/vault.service
+    encoding: b64
+    content: ${systemd}
+    permissions: '0644'
+
   - path: /opt/vault/run.sh
     content: |
       #! /bin/bash
@@ -79,3 +84,7 @@ runcmd:
   - apt-get update
   - apt-get install -y postgresql-client-11
   - export PGPASSWORD="${postgres_admin_password}"; psql -h ${postgres_host} -p 5432 -d vault -U ${postgres_admin_username} -f /tmp/vault.sql
+  - systemctl enable vault.service
+  - systemctl start vault.service
+  - echo 'export VAULT_ADDR="http://127.0.0.1:8200"' >> /home/vault/.bashrc
+  - vault operator init > /opt/vault/init; chown vault:vault /opt/vault/init; chmod 0400 /opt/vault/init

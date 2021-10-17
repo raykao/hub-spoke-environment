@@ -43,9 +43,6 @@ variable "admin_subnet" {
 
 }
 
-variable "storage_account" {
-}
-
 variable "tenant_id" {
   type = string
   default = ""
@@ -67,6 +64,7 @@ locals {
   tenant_id = var.tenant_id != "" ? var.tenant_id : data.azurerm_client_config.current.tenant_id
   postgres_admin_username = var.postgres_admin_username != "" ? var.postgres_admin_username : "vaultadmin"
   postgres_admin_password = var.postgres_admin_password != "" ? var.postgres_admin_password : random_password.postgres.result
+  systemd = base64encode(file("${path.module}/config/vault.service"))
 }
 
 terraform {
@@ -160,12 +158,6 @@ resource "azurerm_user_assigned_identity" "vault" {
   name                = "${local.prefix}-identity"
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
-}
-
-resource "azurerm_role_assignment" "msi_azure_storage_backend" {
-  scope                = var.storage_account.id
-  role_definition_name = "Contributor"
-  principal_id         = azurerm_user_assigned_identity.vault.principal_id
 }
 
 resource "azurerm_role_assignment" "msi_akv" {
@@ -456,6 +448,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
       tenant_id = local.tenant_id
       vault_name = azurerm_key_vault.default.name
       key_name = "vault"
+
+      systemd = local.systemd
 
       postgres_admin_username = "${local.postgres_admin_username}@${azurerm_postgresql_server.vault.name}"
       postgres_admin_password = local.postgres_admin_password
