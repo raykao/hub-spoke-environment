@@ -12,11 +12,3 @@ module "vault" {
   pgsql_private_dns_zone_id = azurerm_private_dns_zone.pgsql.id
   keyvault_private_dns_zone_id = azurerm_private_dns_zone.keyvault.id
 }
-
-resource "azurerm_private_dns_a_record" "vault" {
-  name                = "vault"
-  zone_name           = azurerm_private_dns_zone.hub.name
-  resource_group_name = azurerm_resource_group.hub.name
-  ttl                 = 300
-  records             = [module.vault.lb.frontend_ip_configuration[0].private_ip_address]
-}

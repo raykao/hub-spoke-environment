@@ -534,6 +534,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
   }
 }
 
+resource "azurerm_private_dns_a_record" "vault" {
+  name                = "vault"
+  zone_name           = var.domain
+  resource_group_name = var.resource_group.name
+  ttl                 = 60
+  records             = [azurerm_lb.default.frontend_ip_configuration[0].private_ip_address]
+}
 
 output "lb" {
 	value = azurerm_lb.default
