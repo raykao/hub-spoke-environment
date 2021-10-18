@@ -8,7 +8,7 @@ module "vault" {
 	vm_size = "Standard_F4s_v2"
 	admin_subnet = azurerm_subnet.jumpbox
 	vm_instances = 3
-  domain = azurerm_private_dns_zone.hub.name
-  pgsql_private_dns_zone_id = azurerm_private_dns_zone.pgsql.id
-  keyvault_private_dns_zone_id = azurerm_private_dns_zone.keyvault.id
+	domain = azurerm_private_dns_zone.hub.name
+	pgsql_private_dns_zone_id = azurerm_private_dns_zone.pgsql.id
+	keyvault_private_dns_zone_id = azurerm_private_dns_zone.keyvault.id
 }
