@@ -76,7 +76,9 @@ terraform {
 }
 
 resource "random_password" "postgres" {
-  length           = 16
+  length           = 32
+  min_numeric      = 4
+  min_upper        = 4
   special          = true
   override_special = "_%@"
 
