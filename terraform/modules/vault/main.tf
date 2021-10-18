@@ -86,7 +86,6 @@ resource "random_id" "encrpyt_key" {
   byte_length = 32
 }
 
-
 resource "azurerm_postgresql_server" "vault" {
   name                = "${local.prefix}-vault-psqlserver"
   location            = var.resource_group.location
@@ -115,6 +114,13 @@ resource "azurerm_postgresql_database" "vault" {
   charset             = "UTF8"
   collation           = "English_United States.1252"
 }
+
+resource "time_sleep" "destroy_wait_30_seconds" {
+  depends_on = [azurerm_postgresql_database.vault]
+
+  destroy_duration = "30s"
+}
+
 
 resource "azurerm_private_endpoint" "pgsql" {
 	name = "${local.prefix}-pe-vault-pgsql-hub"
@@ -408,6 +414,20 @@ resource "azurerm_lb" "default" {
   }
 }
 
+resource "azurerm_lb_probe" "vault-server" {
+  resource_group_name = var.resource_group.name
+  loadbalancer_id     = azurerm_lb.default.id
+  name                = "vault-server-tcp"
+  port                = 8200
+}
+
+resource "azurerm_lb_probe" "vault-client" {
+  resource_group_name = var.resource_group.name
+  loadbalancer_id     = azurerm_lb.default.id
+  name                = "vault-client-tcp"
+  port                = 8201
+}
+
 resource "azurerm_lb_rule" "vault-server-tcp-only" {
   name                           = "vault-server-tcp-only"
   resource_group_name            = var.resource_group.name
@@ -416,6 +436,8 @@ resource "azurerm_lb_rule" "vault-server-tcp-only" {
   frontend_port                  = 8200
   backend_port                   = 8200
   frontend_ip_configuration_name = "Primary"
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.default.id
+  probe_id                       = azurerm_lb_probe.vault-server.id
 }
 
 resource "azurerm_lb_rule" "lan-tcp" {
@@ -426,6 +448,8 @@ resource "azurerm_lb_rule" "lan-tcp" {
   frontend_port                  = 8201
   backend_port                   = 8201
   frontend_ip_configuration_name = "Primary"
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.default.id
+  probe_id                       = azurerm_lb_probe.vault-client.id
 }
 
 resource "azurerm_lb_backend_address_pool" "default" {
@@ -434,6 +458,9 @@ resource "azurerm_lb_backend_address_pool" "default" {
 }
 
 resource "azurerm_linux_virtual_machine_scale_set" "default" {
+  depends_on = [
+    time_sleep.destroy_wait_30_seconds
+  ]
 	name                = "${local.vm_name}-vmss"
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
@@ -452,7 +479,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
       systemd = local.systemd
 
       postgres_admin_username = "${local.postgres_admin_username}@${azurerm_postgresql_server.vault.name}"
-      postgres_admin_password = local.postgres_admin_password
+      postgres_admin_password = urlencode(local.postgres_admin_password)
       postgres_host           = azurerm_postgresql_server.vault.fqdn
 		}
 	))

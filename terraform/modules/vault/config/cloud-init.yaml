@@ -87,4 +87,3 @@ runcmd:
   - systemctl enable vault.service
   - systemctl start vault.service
   - echo 'export VAULT_ADDR="http://127.0.0.1:8200"' >> /home/vault/.bashrc
-  - vault operator init > /opt/vault/init; chown vault:vault /opt/vault/init; chmod 0400 /opt/vault/init
