@@ -36,3 +36,11 @@ resource azurerm_subnet aks2 {
 	address_prefixes     = [cidrsubnet(var.address_space, 6, 2)]
 	enforce_private_link_endpoint_network_policies = true
 }
+
+
+resource azurerm_subnet jumpbox {	
+	name = "JumpboxSubnet"
+	resource_group_name  = azurerm_resource_group.spoke1.name
+	virtual_network_name = azurerm_virtual_network.spoke1.name
+	address_prefixes     = [cidrsubnet(var.address_space, 8, 255)]
+}

@@ -5,6 +5,7 @@ resource "azurerm_public_ip" "firewall" {
 	resource_group_name = azurerm_resource_group.hub.name
 	allocation_method   = "Static"
 	sku                 = "Standard"
+  availability_zone   = "No-Zone"
 }
 
 resource "azurerm_firewall" "hub" {

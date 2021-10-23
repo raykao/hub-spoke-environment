@@ -1,4 +1,7 @@
 resource "azurerm_route_table" "default" {
+  depends_on = [
+    azurerm_virtual_network_gateway.default
+  ]
   name                = "default-routetable"
   location            = azurerm_resource_group.hub.location
   resource_group_name = azurerm_resource_group.hub.name
@@ -31,7 +34,7 @@ resource "azurerm_subnet_route_table_association" "dns" {
   route_table_id = azurerm_route_table.default.id
 }
 
-resource "azurerm_subnet_route_table_association" "prometheus" {
-  subnet_id      = azurerm_subnet.prometheus.id
-  route_table_id = azurerm_route_table.default.id
-}
+# resource "azurerm_subnet_route_table_association" "prometheus" {
+#   subnet_id      = azurerm_subnet.prometheus.id
+#   route_table_id = azurerm_route_table.default.id
+# }

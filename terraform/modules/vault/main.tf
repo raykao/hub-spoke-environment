@@ -11,7 +11,7 @@ variable "subnet_id" {
 
 variable "vm_size" {
   type = string
-  default = "Standard_F2s_v2"
+  default = "Standard_D2s_v2"
 }
 
 variable "vm_instances" {
@@ -65,6 +65,9 @@ locals {
   postgres_admin_username = var.postgres_admin_username != "" ? var.postgres_admin_username : "vaultadmin"
   postgres_admin_password = var.postgres_admin_password != "" ? var.postgres_admin_password : random_password.postgres.result
   systemd = base64encode(file("${path.module}/config/vault.service"))
+  psql_query = base64encode(file("${path.module}/config/vault.sql"))
+  run_script = base64encode(file("${path.module}/config/run.sh"))
+
 }
 
 terraform {
@@ -103,6 +106,8 @@ resource "azurerm_postgresql_server" "vault" {
   # backup_retention_days        = 7
   geo_redundant_backup_enabled = false
   auto_grow_enabled            = false
+
+  infrastructure_encryption_enabled = false 
 
   public_network_access_enabled    = false
   ssl_enforcement_enabled          = true
@@ -483,6 +488,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
       postgres_admin_username = "${local.postgres_admin_username}@${azurerm_postgresql_server.vault.name}"
       postgres_admin_password = urlencode(local.postgres_admin_password)
       postgres_host           = azurerm_postgresql_server.vault.fqdn
+      psql_query              = local.psql_query
+      run_script              = local.run_script
 		}
 	))
 	

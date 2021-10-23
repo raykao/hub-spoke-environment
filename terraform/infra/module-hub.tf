@@ -5,7 +5,7 @@ module hub {
 		azurerm = azurerm.sub1
 	}
 	prefix = "${local.prefix}hub"
-	location = "eastus"
+	location = "centralus"
 	contributor_msi = module.global.contributor_msi
 	admin_username = local.admin_username
 	ssh_key = module.global.public_key

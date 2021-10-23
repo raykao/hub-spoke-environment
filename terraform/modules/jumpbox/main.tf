@@ -66,8 +66,8 @@ resource "azurerm_public_ip" "jumpbox" {
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
 	allocation_method   = "Static"
-	sku 				= "Standard"
-  	domain_name_label = "${local.prefix}jumpbox${local.index}"
+	sku 								= "Standard"
+  domain_name_label 	= "${local.prefix}jumpbox${local.index}"
 }
 
 resource "azurerm_network_interface" "jumpbox" {

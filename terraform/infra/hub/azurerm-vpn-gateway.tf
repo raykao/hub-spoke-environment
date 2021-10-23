@@ -4,8 +4,9 @@ resource "azurerm_public_ip" "vpngateway" {
 	resource_group_name = azurerm_resource_group.hub.name
 	location            = azurerm_resource_group.hub.location
 	allocation_method   = "Static"
-	sku 				= "Standard"
-  	domain_name_label = "${local.prefix}-hub-vpn"
+	sku 				        = "Standard"
+  domain_name_label   = "${local.prefix}-hub-vpn"
+  availability_zone   = "Zone-Redundant"
 }
 
 resource "tls_private_key" "ca" {
@@ -63,14 +64,6 @@ data "local_file" "ca_der" {
 
 resource "azurerm_virtual_network_gateway" "default" {
   depends_on = [
-    azurerm_subnet.firewall,
-    azurerm_subnet.consul,
-    azurerm_subnet.nomad,
-    azurerm_subnet.vault,
-    azurerm_subnet.prometheus,
-    azurerm_subnet.vpn,
-    azurerm_subnet.dns,
-    azurerm_subnet.jumpbox,
     azurerm_firewall.hub
   ]
 	

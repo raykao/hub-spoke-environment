@@ -1,4 +1,7 @@
 # module "consul" {
+#   depends_on = [
+#     module.dns
+#   ]
 # 	source = "../../modules/consul"
 # 	user_msi = var.contributor_msi.id
 # 	prefix = local.prefix

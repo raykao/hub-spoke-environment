@@ -14,6 +14,8 @@ module spoke1 {
 		vnet = module.hub.vnet
 	}
 	admin_groups = var.admin_groups
+	admin_email = var.admin_email
+	ssh_key = module.global.public_key
 }
 
 resource "azurerm_virtual_network_peering" "hubtospoke1" {	

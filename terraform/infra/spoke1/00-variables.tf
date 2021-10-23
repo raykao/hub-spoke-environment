@@ -28,3 +28,11 @@ variable "hub" {
 
 variable "admin_groups" {
 }
+
+variable "admin_email" {
+	type = string
+}
+
+variable "ssh_key" {
+	type = string
+}

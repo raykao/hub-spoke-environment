@@ -1,4 +1,7 @@
 # module "prometheus" {
+#   depends_on = [
+#     module.dns
+#   ]
 # 	source = "../../modules/prometheus"
 # 	user_msi = var.contributor_msi.id
 # 	prefix = local.prefix

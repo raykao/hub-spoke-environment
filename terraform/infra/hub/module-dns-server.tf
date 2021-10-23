@@ -1,4 +1,7 @@
 module "dns" {
+  depends_on = [
+    azurerm_virtual_network_gateway.default
+  ]
   source = "../../modules/bind9"
   prefix = local.prefix
   vnet_address_spaces = [var.global_address_space]
