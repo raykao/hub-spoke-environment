@@ -1,0 +1,51 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - apt-transport-https
+  - gnupg2
+  - unzip
+  - ca-certificates
+  - curl 
+  - apt-transport-https 
+  - lsb-release
+  - gnupg
+groups:
+  - step
+users:
+  - default
+  - name: step
+    gecos: step-ca server
+    primary_group: step
+    ssh_authorized_keys:
+      - ${ssh_key}
+write_files:
+  - path: /etc/systemd/system/step.service
+    encoding: b64
+    content: ${systemd}
+    permissions: '0644'
+
+  - path: /opt/step/run.sh
+    content: ${run_script}
+    permissions: '0700'
+  - path: /opt/step/config/server.hcl
+    content: 
+      
+    permissions: '0600'
+  - path: /tmp/vault.sql
+    encoding: b64
+    content: ${psql_query}
+runcmd:
+  - wget 
+  - chmod +x /opt/vault/run.sh
+  - chown -R vault:vault /opt/vault
+  - wget -O /tmp/vault.zip https://releases.hashicorp.com/vault/1.8.4/vault_1.8.4_linux_amd64.zip
+  - unzip /tmp/vault.zip -d /usr/local/bin/
+  # install posgresql 11 client
+  - curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+  - sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+  - apt-get update
+  - apt-get install -y postgresql-client-11
+  - export PGPASSWORD="${postgres_admin_password}"; psql -h ${postgres_host} -p 5432 -d vault -U ${postgres_admin_username} -f /tmp/vault.sql
+  - systemctl enable vault.service
+  - systemctl start vault.service
+  - echo 'export VAULT_ADDR="http://127.0.0.1:8200"' >> /home/vault/.bashrc
