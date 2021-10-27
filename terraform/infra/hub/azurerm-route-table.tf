@@ -14,30 +14,30 @@ resource "azurerm_route_table" "default" {
   }
 }
 
-resource "azurerm_subnet_route_table_association" "consul" {
-  subnet_id      = azurerm_subnet.consul.id
-  route_table_id = azurerm_route_table.default.id
-}
+# resource "azurerm_subnet_route_table_association" "consul" {
+#   subnet_id      = azurerm_subnet.consul.id
+#   route_table_id = azurerm_route_table.default.id
+# }
 
-resource "azurerm_subnet_route_table_association" "vault" {
-  subnet_id      = azurerm_subnet.vault.id
-  route_table_id = azurerm_route_table.default.id
-}
+# resource "azurerm_subnet_route_table_association" "vault" {
+#   subnet_id      = azurerm_subnet.vault.id
+#   route_table_id = azurerm_route_table.default.id
+# }
 
-resource "azurerm_subnet_route_table_association" "nomad" {
-  subnet_id      = azurerm_subnet.nomad.id
-  route_table_id = azurerm_route_table.default.id
-}
+# resource "azurerm_subnet_route_table_association" "nomad" {
+#   subnet_id      = azurerm_subnet.nomad.id
+#   route_table_id = azurerm_route_table.default.id
+# }
 
-resource "azurerm_subnet_route_table_association" "dns" {
-  subnet_id      = azurerm_subnet.dns.id
-  route_table_id = azurerm_route_table.default.id
-}
+# resource "azurerm_subnet_route_table_association" "dns" {
+#   subnet_id      = azurerm_subnet.dns.id
+#   route_table_id = azurerm_route_table.default.id
+# }
 
-resource "azurerm_subnet_route_table_association" "pki" {
-  subnet_id      = azurerm_subnet.pki.id
-  route_table_id = azurerm_route_table.default.id
-}
+# resource "azurerm_subnet_route_table_association" "pki" {
+#   subnet_id      = azurerm_subnet.pki.id
+#   route_table_id = azurerm_route_table.default.id
+# }
 
 # resource "azurerm_subnet_route_table_association" "prometheus" {
 #   subnet_id      = azurerm_subnet.prometheus.id

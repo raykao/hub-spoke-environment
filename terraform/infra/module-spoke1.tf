@@ -19,12 +19,12 @@ module spoke1 {
 
 }
 
-
 resource "azurerm_virtual_hub_connection" "spoke1" {
 	provider = azurerm.sub1
   name                      = "canadacentral-spoke1-vhub"
   virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
   remote_virtual_network_id = module.spoke1.vnet.id
+	internet_security_enabled = true
 }
 
 
