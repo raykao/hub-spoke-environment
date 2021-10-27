@@ -73,7 +73,6 @@ resource azurerm_subnet dns {
 }
 
 resource azurerm_subnet jumpbox {
-	
 	name = "JumpboxSubnet"
 	resource_group_name  = azurerm_resource_group.hub.name
 	virtual_network_name = azurerm_virtual_network.hub.name

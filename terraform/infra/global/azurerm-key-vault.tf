@@ -118,3 +118,62 @@ resource "azurerm_key_vault_access_policy" "user-msi-global" {
 		"Set"
 	]
 }
+
+
+# resource "azurerm_key_vault_certificate" "rootca" {
+#   depends_on = [
+#     azurerm_key_vault_access_policy.user-global
+#   ]
+
+#   name         = "rootca"
+#   key_vault_id = azurerm_key_vault.global.id
+
+#   certificate_policy {
+#     issuer_parameters {
+#       name = "Self"
+#     }
+
+#     key_properties {
+#       exportable = true
+#       key_size   = 2048
+#       key_type   = "RSA"
+#       reuse_key  = true
+#     }
+
+#     lifetime_action {
+#       action {
+#         action_type = "AutoRenew"
+#       }
+
+#       trigger {
+#         days_before_expiry = 60
+#       }
+#     }
+
+#     secret_properties {
+#       content_type = "application/x-pem-file"
+#     }
+
+#     x509_certificate_properties {
+#       # Server Authentication = 1.3.6.1.5.5.7.3.1
+#       # Client Authentication = 1.3.6.1.5.5.7.3.2
+#       extended_key_usage = ["1.3.6.1.5.5.7.3.1", "1.3.6.1.5.5.7.3.2"]
+
+#       key_usage = [
+#         "digitalSignature",
+#         "keyEncipherment",
+#         # "dataEncipherment",
+#         # "keyAgreement",
+#         "keyCertSign",
+#         "cRLSign",
+#       ]
+
+#       subject_alternative_names {
+#         dns_names = ["ca.${azurerm_private_dns_zone.global.name}"]
+#       }
+
+#       subject            = "CN=ca.${azurerm_private_dns_zone.global.name}"
+#       validity_in_months = 60
+#     }
+#   }
+# }

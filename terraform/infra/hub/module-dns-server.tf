@@ -1,6 +1,6 @@
 module "dns" {
   depends_on = [
-    azurerm_virtual_network_gateway.default
+    # azurerm_virtual_network_gateway.default
   ]
   source = "../../modules/bind9"
   prefix = local.prefix

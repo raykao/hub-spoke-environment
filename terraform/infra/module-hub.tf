@@ -15,6 +15,13 @@ module hub {
 	admin_email = var.admin_email
 }
 
+resource "azurerm_virtual_hub_connection" "hub" {
+	provider = azurerm.sub1
+  name                      = "canadacentral-hub-vhub"
+  virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
+  remote_virtual_network_id = module.hub.vnet.id
+}
+
 resource "time_sleep" "wait_60_seconds" {
   depends_on = [
 		module.hub

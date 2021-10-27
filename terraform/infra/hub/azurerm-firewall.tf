@@ -39,7 +39,10 @@ resource "azurerm_firewall_application_rule_collection" "globalVnetAllowRules" {
 			"*.ubuntu.com",
 			"*.archive.ubuntu.com",
       "*.azure.archive.ubuntu.com",
-			"apt.releases.hashicorp.com"
+			"apt.releases.hashicorp.com",
+      "*.microsoft.com",
+      "aka.ms",
+      "management.azure.com"
     ]
 
     protocol {
@@ -70,38 +73,15 @@ resource "azurerm_firewall_application_rule_collection" "globalVnetAllowRules" {
 }
 
 
-resource "azurerm_firewall_application_rule_collection" "consul" {
-  name                = "consulUpdateRules"
+resource "azurerm_firewall_application_rule_collection" "hashi" {
+  name                = "hashiUpdateRules"
   azure_firewall_name = azurerm_firewall.hub.name
   resource_group_name = azurerm_resource_group.hub.name
   priority            = 500
   action              = "Allow"
 
   rule {
-    name = "ubuntuUpdates"
-
-    source_addresses = [
-      azurerm_subnet.consul.address_prefixes[0],
-      azurerm_subnet.vault.address_prefixes[0],
-      azurerm_subnet.nomad.address_prefixes[0]
-    ]
-
-    target_fqdns  = [
-			"*.ubuntu.com",
-			"*.archive.ubuntu.com",
-      "*.azure.archive.ubuntu.com",
-			"apt.releases.hashicorp.com",
-      "*.hashicorp.com"
-    ]
-
-    protocol {
-      port = "443"
-			type = "Https"
-		}
-  }
-
-	rule {
-    name = "ubuntuHttpUpdates"
+    name = "updatesRequired"
 
     source_addresses = [
       azurerm_subnet.consul.address_prefixes[0],
@@ -120,6 +100,11 @@ resource "azurerm_firewall_application_rule_collection" "consul" {
     protocol {
       port = "80"
 			type = "Http"
+		}
+
+    protocol {
+      port = "443"
+			type = "Https"
 		}
   }
 
@@ -139,6 +124,34 @@ resource "azurerm_firewall_application_rule_collection" "consul" {
       port = "80"
 			type = "Http"
 		}
+
+    protocol {
+      port = "443"
+			type = "Https"
+		}
+  }
+}
+
+
+resource "azurerm_firewall_application_rule_collection" "pki" {
+  name                = "pkiUpdateRules"
+  azure_firewall_name = azurerm_firewall.hub.name
+  resource_group_name = azurerm_resource_group.hub.name
+  priority            = 600
+  action              = "Allow"
+
+  rule {
+    name = "updates"
+
+    source_addresses = [
+      azurerm_subnet.pki.address_prefixes[0]
+    ]
+
+    target_fqdns  = [
+			"dl.step.sm",
+      "github.com",
+      "github-releases.githubusercontent.com"
+    ]
 
     protocol {
       port = "443"

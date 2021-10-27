@@ -1,0 +1,12 @@
+{
+	"root": "/opt/stepca/secrets/root_ca.crt",
+	"crt": "/opt/stepca/secrets/intermediate_ca.crt",
+	"key": "azurekms:name=${key_name};vault=${vault_name}?version=${certificate_version}&hsm=${hsm}",
+	"dnsNames": [
+		"${dns_name}"
+		],
+	"kms": {
+		"type": "azurekms"
+	},
+	"address": ":443"
+}

@@ -53,3 +53,22 @@ hub = {
 sudo passwd ${admin_username}
 
 ```
+
+## Notes
+
+### Azure Key Vault PKCS to PEM
+
+Download Combined Cert/Private Key file (presuming cert was created with the ability to export key)
+```
+# Download combined certificate
+ az keyvault secret download --vault-name <vault-name> --name <secret-name> --file combined-cert.crt
+
+# Extract only the private key in combined PKCS12 formatted cert AND convert to pem format private key
+openssl pkcs12 -nodes -nocerts -in combined-cert.crt | openssl rsa -out private.key
+
+# Extract only the private key in combined PEM formatted cert
+openssl rsa -in combined-cert.pem -out private.key
+
+# Create x509 public cert fingerprint
+openssl x509 -noout -fingerprint -sha1 -inform pem -in combined-cert.pem 
+```

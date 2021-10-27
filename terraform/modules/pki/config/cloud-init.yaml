@@ -10,42 +10,35 @@ packages:
   - lsb-release
   - gnupg
 groups:
-  - step
+  - stepca
 users:
   - default
-  - name: step
+  - name: stepca
     gecos: step-ca server
-    primary_group: step
+    primary_group: stepca
     ssh_authorized_keys:
       - ${ssh_key}
 write_files:
-  - path: /etc/systemd/system/step.service
+  - path: /tmp/stepca/config/ca.json
     encoding: b64
-    content: ${systemd}
-    permissions: '0644'
-
-  - path: /opt/step/run.sh
-    content: ${run_script}
-    permissions: '0700'
-  - path: /opt/step/config/server.hcl
-    content: 
-      
-    permissions: '0600'
-  - path: /tmp/vault.sql
-    encoding: b64
-    content: ${psql_query}
+    content: ${step_config}
+    permissions: '0640'
 runcmd:
-  - wget 
-  - chmod +x /opt/vault/run.sh
-  - chown -R vault:vault /opt/vault
-  - wget -O /tmp/vault.zip https://releases.hashicorp.com/vault/1.8.4/vault_1.8.4_linux_amd64.zip
-  - unzip /tmp/vault.zip -d /usr/local/bin/
-  # install posgresql 11 client
-  - curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-  - sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-  - apt-get update
-  - apt-get install -y postgresql-client-11
-  - export PGPASSWORD="${postgres_admin_password}"; psql -h ${postgres_host} -p 5432 -d vault -U ${postgres_admin_username} -f /tmp/vault.sql
-  - systemctl enable vault.service
-  - systemctl start vault.service
-  - echo 'export VAULT_ADDR="http://127.0.0.1:8200"' >> /home/vault/.bashrc
+  - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+  - AZ_REPO=$(lsb_release -cs); echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+  - sudo apt-get update
+  - sudo apt-get install -y azure-cli
+  - wget https://dl.step.sm/gh-release/cli/docs-ca-install/v0.17.6/step-cli_0.17.6_amd64.deb
+  - sudo dpkg -i step-cli_0.17.6_amd64.deb
+  - wget https://dl.step.sm/gh-release/certificates/docs-ca-install/v0.17.6/step-ca_0.17.6_amd64.deb
+  - sudo dpkg -i step-ca_0.17.6_amd64.deb
+  - mkdir -p /opt/stepca/config
+  - mkdir -p /opt/stepca/certs
+  - mv /tmp/stepca/config/ca.json /opt/stepca/config/ca.json
+  - chmod 0640 /opt/stepca/config/ca.json
+  - chown -R stepca:stepca /opt/stepca
+  - echo "-----BEGIN CERTIFICATE-----" >> /tmp/root_ca.crt
+  - cat /tmp/root_ca.txt | sed -e "s/.\{76\}/&\n/g" >> /tmp/root_ca.crt
+  - echo "-----END CERTIFICATE-----" >> /tmp/root_ca.crt
+  - mv /tmp/root_ca.crt /opt/stepca/certs/root_ca.crt
+  - rm /tmp/root_ca.txt; rm /tmp/stepca

@@ -64,8 +64,16 @@ locals {
   tenant_id = var.tenant_id != "" ? var.tenant_id : data.azurerm_client_config.current.tenant_id
   postgres_admin_username = var.postgres_admin_username != "" ? var.postgres_admin_username : "stepcaadmin"
   postgres_admin_password = var.postgres_admin_password != "" ? var.postgres_admin_password : random_password.postgres.result
-  # systemd = base64encode(file("${path.module}/config/vault.service"))
-  # psql_query = base64encode(file("${path.module}/config/vault.sql"))
+  systemd = base64encode(file("${path.module}/config/stepca.service"))
+  step_config = base64encode(templatefile("${path.module}/config/ca.json", {
+    key_name = azurerm_key_vault_certificate.intermediate-ca.name
+    vault_name = azurerm_key_vault.default.name
+    certificate_version = azurerm_key_vault_certificate.intermediate-ca.version
+    dns_name = azurerm_private_dns_a_record.stepca.fqdn
+    hsm = local.hsm
+  }))
+  root_ca = azurerm_key_vault_certificate.intermediate-ca.certificate_data_base64
+  hsm = false
   # run_script = base64encode(file("${path.module}/config/run.sh"))
 
 }
@@ -125,7 +133,6 @@ resource "time_sleep" "destroy_wait_30_seconds" {
 
   destroy_duration = "30s"
 }
-
 
 resource "azurerm_private_endpoint" "pgsql" {
 	name = "${local.prefix}-pe-stepca-pgsql-hub"
@@ -193,7 +200,6 @@ resource "azurerm_key_vault" "default" {
 }
 
 resource "azurerm_key_vault_access_policy" "stepca" {
-	
 	key_vault_id = azurerm_key_vault.default.id
 	tenant_id    = local.tenant_id
 	object_id    = azurerm_user_assigned_identity.stepca.principal_id
@@ -250,7 +256,6 @@ resource "azurerm_key_vault_access_policy" "stepca" {
 
 
 resource "azurerm_key_vault_access_policy" "admin" {
-	
 	key_vault_id = azurerm_key_vault.default.id
 	tenant_id    = local.tenant_id
 	object_id    = data.azurerm_client_config.current.object_id
@@ -305,33 +310,78 @@ resource "azurerm_key_vault_access_policy" "admin" {
 	]
 }
 
-resource "azurerm_key_vault_key" "stepca" {
+resource "azurerm_key_vault_certificate" "intermediate-ca" {
   depends_on = [
     azurerm_key_vault_access_policy.admin
   ]
-  name         = "stepca"
-  key_vault_id = azurerm_key_vault.default.id
-  key_type     = "RSA"
-  key_size     = 2048
 
-  key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey",
-  ]
+  name         = "intermediate-ca"
+  key_vault_id = azurerm_key_vault.default.id
+
+  certificate_policy {
+    issuer_parameters {
+      name = "Unknown"
+    }
+
+    key_properties {
+      exportable = true
+      key_size   = 256
+      key_type   = "EC"
+      reuse_key  = true
+      curve = "P-256"
+    }
+
+    lifetime_action {
+      action {
+        action_type = "EmailContacts"
+      }
+
+      trigger {
+        days_before_expiry = 30
+      }
+    }
+
+    secret_properties {
+      content_type = "application/x-pkcs12"
+    }
+
+    x509_certificate_properties {
+      # Server Authentication = 1.3.6.1.5.5.7.3.1
+      # Client Authentication = 1.3.6.1.5.5.7.3.2
+      extended_key_usage = ["1.3.6.1.5.5.7.3.1", "1.3.6.1.5.5.7.3.2"]
+
+      key_usage = [
+        "digitalSignature",
+        "cRLSign",
+        "keyCertSign",
+      ]
+
+      subject_alternative_names {
+        dns_names = [azurerm_private_dns_a_record.stepca.fqdn]
+      }
+
+      subject            = "CN=${azurerm_private_dns_a_record.stepca.fqdn}"
+      validity_in_months = 12
+    }
+
+  }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      certificate_policy[0].x509_certificate_properties[0].key_usage      ]
+  }
 }
 
 resource "azurerm_network_security_group" "default" {  
 	name                = "stepcaNSG"
-    location            = var.resource_group.location
-    resource_group_name = var.resource_group.name
-
-	security_rule {
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
+    
+  security_rule {
     name                       = "stepca-server-tcp-only"
     priority                   = 100
+    description                = ""
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -341,9 +391,10 @@ resource "azurerm_network_security_group" "default" {
     destination_address_prefix = "*"
   }
 
-	security_rule {
+  security_rule {
     name                       = "stepca-client-tcp-only"
     priority                   = 110
+    description                = ""
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -356,6 +407,7 @@ resource "azurerm_network_security_group" "default" {
   security_rule {
     name                       = "allow-admin-all"
     priority                   = 190
+    description                = ""
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -368,6 +420,7 @@ resource "azurerm_network_security_group" "default" {
   security_rule {
     name                       = "ssh-deny"
     priority                   = 200
+    description                = ""
     direction                  = "Inbound"
     access                     = "Deny"
     protocol                   = "*"
@@ -380,6 +433,7 @@ resource "azurerm_network_security_group" "default" {
   security_rule {
     name                       = "psql-deny"
     priority                   = 300
+    description                = ""
     direction                  = "Inbound"
     access                     = "Deny"
     protocol                   = "*"
@@ -392,8 +446,9 @@ resource "azurerm_network_security_group" "default" {
   security_rule {
     name                       = "internet-outbound-allow"
     priority                   = 500
+    description                = ""
     direction                  = "Outbound"
-    access                     = "allow"
+    access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
@@ -401,6 +456,8 @@ resource "azurerm_network_security_group" "default" {
     destination_address_prefix = "*"
   }
 }
+
+
 
 resource "azurerm_subnet_network_security_group_association" "default" {
 	subnet_id                 = var.subnet_id
@@ -434,7 +491,9 @@ resource "azurerm_lb_rule" "stepca-server-http" {
   frontend_port                  = 80
   backend_port                   = 80
   frontend_ip_configuration_name = "Primary"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.default.id
+  backend_address_pool_ids        = [ 
+    azurerm_lb_backend_address_pool.default.id 
+  ]
   probe_id                       = azurerm_lb_probe.stepca-server.id
 }
 
@@ -446,7 +505,9 @@ resource "azurerm_lb_rule" "stepca-server-https" {
   frontend_port                  = 443
   backend_port                   = 443
   frontend_ip_configuration_name = "Primary"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.default.id
+  backend_address_pool_ids        = [ 
+    azurerm_lb_backend_address_pool.default.id 
+  ]
   probe_id                       = azurerm_lb_probe.stepca-server.id
 }
 
@@ -466,23 +527,22 @@ resource "azurerm_linux_virtual_machine_scale_set" "default" {
 	instances           = var.vm_instances
 	admin_username      = var.admin_username
 
-	# custom_data = base64encode(
-	# 	templatefile("${path.module}/config/cloud-init.yaml", 
-	# 	{ 
-  #     ssh_key = trimspace(var.ssh_key)
-  #     tenant_id = local.tenant_id
-  #     vault_name = azurerm_key_vault.default.name
-  #     key_name = "stepca"
+	custom_data = base64encode(
+		templatefile("${path.module}/config/cloud-init.yaml", 
+		{ 
+      ssh_key = trimspace(var.ssh_key)
+      tenant_id = local.tenant_id
 
-  #     systemd = local.systemd
+      systemd = local.systemd
 
-  #     postgres_admin_username = "${local.postgres_admin_username}@${azurerm_postgresql_server.stepca.name}"
-  #     postgres_admin_password = urlencode(local.postgres_admin_password)
-  #     postgres_host           = azurerm_postgresql_server.stepca.fqdn
-  #     psql_query              = local.psql_query
-  #     run_script              = local.run_script
-	# 	}
-	# ))
+      dns_name = azurerm_private_dns_a_record.stepca.fqdn
+
+      step_config = local.step_config
+
+      # root_ca = azurerm_key_vault_certificate.intermediate-ca.certificate_data_base64
+      # run_script              = local.run_script
+		}
+	))
 	
 	identity {
 		type = "UserAssigned"

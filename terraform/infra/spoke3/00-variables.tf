@@ -36,3 +36,11 @@ variable "hub" {
 variable "admin_email" {
 	type = string
 }
+
+variable "keyvault_private_dns_zone_id" {
+	type = string
+}
+
+variable "pgsql_private_dns_zone_id" {
+	type = string
+}

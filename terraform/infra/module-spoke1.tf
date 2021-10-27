@@ -16,23 +16,33 @@ module spoke1 {
 	admin_groups = var.admin_groups
 	admin_email = var.admin_email
 	ssh_key = module.global.public_key
+
 }
 
-resource "azurerm_virtual_network_peering" "hubtospoke1" {	
+
+resource "azurerm_virtual_hub_connection" "spoke1" {
 	provider = azurerm.sub1
-	name                      = "hubtospoke1"
-	resource_group_name       = module.hub.resource_group.name
-	virtual_network_name      = module.hub.vnet.name
-	remote_virtual_network_id = module.spoke1.vnet.id
+  name                      = "canadacentral-spoke1-vhub"
+  virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
+  remote_virtual_network_id = module.spoke1.vnet.id
 }
 
-resource "azurerm_virtual_network_peering" "spoke1tohub" {	
-	provider = azurerm.sub1
-	name                      = "spoke1tohub"
-	resource_group_name       = module.spoke1.resource_group.name
-	virtual_network_name      = module.spoke1.vnet.name
-	remote_virtual_network_id = module.hub.vnet.id
-}
+
+# resource "azurerm_virtual_network_peering" "hubtospoke1" {	
+# 	provider = azurerm.sub1
+# 	name                      = "hubtospoke1"
+# 	resource_group_name       = module.hub.resource_group.name
+# 	virtual_network_name      = module.hub.vnet.name
+# 	remote_virtual_network_id = module.spoke1.vnet.id
+# }
+
+# resource "azurerm_virtual_network_peering" "spoke1tohub" {	
+# 	provider = azurerm.sub1
+# 	name                      = "spoke1tohub"
+# 	resource_group_name       = module.spoke1.resource_group.name
+# 	virtual_network_name      = module.spoke1.vnet.name
+# 	remote_virtual_network_id = module.hub.vnet.id
+# }
 
 resource "azurerm_dns_ns_record" "spoke1" {
   provider = azurerm.sub1

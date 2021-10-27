@@ -443,7 +443,9 @@ resource "azurerm_lb_rule" "vault-server-tcp-only" {
   frontend_port                  = 8200
   backend_port                   = 8200
   frontend_ip_configuration_name = "Primary"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.default.id
+  backend_address_pool_ids        = [
+    azurerm_lb_backend_address_pool.default.id
+  ]
   probe_id                       = azurerm_lb_probe.vault-server.id
 }
 
@@ -455,7 +457,9 @@ resource "azurerm_lb_rule" "lan-tcp" {
   frontend_port                  = 8201
   backend_port                   = 8201
   frontend_ip_configuration_name = "Primary"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.default.id
+  backend_address_pool_ids        = [
+    azurerm_lb_backend_address_pool.default.id
+  ]
   probe_id                       = azurerm_lb_probe.vault-client.id
 }
 

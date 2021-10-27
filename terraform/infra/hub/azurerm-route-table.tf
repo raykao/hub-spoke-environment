@@ -1,6 +1,6 @@
 resource "azurerm_route_table" "default" {
   depends_on = [
-    azurerm_virtual_network_gateway.default
+    # azurerm_virtual_network_gateway.default
   ]
   name                = "default-routetable"
   location            = azurerm_resource_group.hub.location
@@ -31,6 +31,11 @@ resource "azurerm_subnet_route_table_association" "nomad" {
 
 resource "azurerm_subnet_route_table_association" "dns" {
   subnet_id      = azurerm_subnet.dns.id
+  route_table_id = azurerm_route_table.default.id
+}
+
+resource "azurerm_subnet_route_table_association" "pki" {
+  subnet_id      = azurerm_subnet.pki.id
   route_table_id = azurerm_route_table.default.id
 }
 
