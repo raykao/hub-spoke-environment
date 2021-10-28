@@ -24,6 +24,7 @@ resource "azurerm_virtual_hub_connection" "spoke3" {
   name                      = "canadacentral-spoke3-vhub"
   virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
   remote_virtual_network_id = module.spoke3.vnet.id
+	internet_security_enabled = true
 }
 
 # resource "azurerm_virtual_network_peering" "hubtospoke3" {

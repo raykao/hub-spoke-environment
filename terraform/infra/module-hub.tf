@@ -20,6 +20,7 @@ resource "azurerm_virtual_hub_connection" "hub" {
   name                      = "canadacentral-hub-vhub"
   virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
   remote_virtual_network_id = module.hub.vnet.id
+	internet_security_enabled = false
 }
 
 resource "time_sleep" "wait_60_seconds" {
