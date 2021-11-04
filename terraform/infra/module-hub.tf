@@ -22,21 +22,3 @@ resource "azurerm_virtual_hub_connection" "hub" {
   remote_virtual_network_id = module.hub.vnet.id
 	internet_security_enabled = false
 }
-
-resource "time_sleep" "wait_60_seconds" {
-  depends_on = [
-		module.hub
-	]
-
-  create_duration = "60s"
-}
-
-resource "null_resource" "upload-id_rsa" {
-  depends_on =  [ 
-		time_sleep.wait_60_seconds
-	]
-  
-  provisioner "local-exec" {
-      command = "scp -P 2022 -o StrictHostKeyChecking=no -q -i ${path.module}/certs/${terraform.workspace}/global/id_rsa ${path.module}/certs/${terraform.workspace}/global/id_rsa ${local.admin_username}@${module.hub.jumpbox.ip_address}:~/.ssh"
-  }
-}
