@@ -1,5 +1,4 @@
 resource "azurerm_virtual_network" "spoke1" {
-	
 	name = "${local.prefix}spoke1-vnet"
 	resource_group_name = azurerm_resource_group.spoke1.name
 	location = azurerm_resource_group.spoke1.location

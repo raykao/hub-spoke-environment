@@ -30,3 +30,17 @@ resource "azurerm_private_endpoint" "storage-spoke2" {
     private_dns_zone_ids  = [ azurerm_private_dns_zone.storage-priv-link.id ]
   }
 }
+
+resource "azurerm_storage_account_network_rules" "spoke2" {
+  # resource_group_name  = azurerm_resource_group.spoke2.name
+  # storage_account_name = azurerm_storage_account.spoke2.name
+  storage_account_id = azurerm_storage_account.spoke2.id
+
+  default_action             = "Deny"
+  # virtual_network_subnet_ids = [azurerm_subnet.spoke2-pe.id]
+  # bypass                     = ["Logging", "Metrics", "AzureServices"]
+
+  private_link_access {
+    endpoint_resource_id = azurerm_private_endpoint.storage-spoke2.id
+  }
+}
