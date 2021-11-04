@@ -39,6 +39,9 @@ resource "azurerm_storage_account_network_rules" "spoke2" {
   default_action             = "Deny"
   # virtual_network_subnet_ids = [azurerm_subnet.spoke2-pe.id]
   # bypass                     = ["Logging", "Metrics", "AzureServices"]
+  ip_rules = [
+    data.http.myip.body
+  ]
 
   private_link_access {
     endpoint_resource_id = azurerm_private_endpoint.storage-spoke2.id

@@ -11,3 +11,7 @@ locals {
 	prefix = var.prefix
 	region = "spoke2"
 }
+
+data "http" "myip" {
+  url = "https://api.ipify.org/"
+}
