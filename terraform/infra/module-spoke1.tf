@@ -27,23 +27,6 @@ resource "azurerm_virtual_hub_connection" "spoke1" {
 	internet_security_enabled = true
 }
 
-
-# resource "azurerm_virtual_network_peering" "hubtospoke1" {	
-# 	provider = azurerm.sub1
-# 	name                      = "hubtospoke1"
-# 	resource_group_name       = module.hub.resource_group.name
-# 	virtual_network_name      = module.hub.vnet.name
-# 	remote_virtual_network_id = module.spoke1.vnet.id
-# }
-
-# resource "azurerm_virtual_network_peering" "spoke1tohub" {	
-# 	provider = azurerm.sub1
-# 	name                      = "spoke1tohub"
-# 	resource_group_name       = module.spoke1.resource_group.name
-# 	virtual_network_name      = module.spoke1.vnet.name
-# 	remote_virtual_network_id = module.hub.vnet.id
-# }
-
 resource "azurerm_dns_ns_record" "spoke1" {
   provider = azurerm.sub1
   name = "spoke1"
