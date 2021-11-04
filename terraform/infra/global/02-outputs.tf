@@ -25,3 +25,7 @@ output "public_dns_zone" {
 output "admin_email" {
 	value = var.admin_email
 }
+
+output "vpn_psk" {
+	value = random_string.psk.result
+}

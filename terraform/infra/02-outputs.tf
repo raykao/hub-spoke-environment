@@ -16,3 +16,7 @@ output hub {
 		}
 	}
 }
+
+output vpk_psk {
+	value = module.global.vpn_psk
+}
