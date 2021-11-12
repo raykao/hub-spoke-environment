@@ -8,7 +8,7 @@ output subId2 {
 
 output hub {
 	value = {
-		jumpbox = module.hub.jumpbox
+		# jumpbox = module.hub.jumpbox
 		vnet = {
 			id = module.hub.vnet.id
 			dns_servers = module.hub.vnet.dns_servers
@@ -19,4 +19,8 @@ output hub {
 
 output vpk_psk {
 	value = module.global.vpn_psk
+}
+
+output vpn_ip {
+	value = module.global.vpn_ip
 }

@@ -61,14 +61,14 @@ data "http" "myip" {
   url = "https://api.ipify.org/"
 }
 
-resource "azurerm_public_ip" "jumpbox" {
-	name                = "${local.prefix}jumpbox${local.index}-pip"
-	resource_group_name = var.resource_group.name
-	location            = var.resource_group.location
-	allocation_method   = "Static"
-	sku 								= "Standard"
-  domain_name_label 	= "${local.prefix}jumpbox${local.index}"
-}
+# resource "azurerm_public_ip" "jumpbox" {
+# 	name                = "${local.prefix}jumpbox${local.index}-pip"
+# 	resource_group_name = var.resource_group.name
+# 	location            = var.resource_group.location
+# 	allocation_method   = "Static"
+# 	sku 								= "Standard"
+#   domain_name_label 	= "${local.prefix}jumpbox${local.index}"
+# }
 
 resource "azurerm_network_interface" "jumpbox" {
 	name                = "${local.prefix}jumpbox${local.index}-nic"
@@ -81,7 +81,7 @@ resource "azurerm_network_interface" "jumpbox" {
 		name                          = "primary"
 		subnet_id                     = var.subnet_id
 		private_ip_address_allocation = "Dynamic"
-		public_ip_address_id  = azurerm_public_ip.jumpbox.id
+		# public_ip_address_id  = azurerm_public_ip.jumpbox.id
 	}
 }
 
@@ -155,7 +155,7 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 		templatefile("${path.module}/config/jumpbox-cloud-init.yaml", 
 		{ 
 			admin_username = var.admin_username
-			url = azurerm_public_ip.jumpbox.fqdn
+			# url = azurerm_public_ip.jumpbox.fqdn
 			admin_email = var.admin_email
 			terraform_version = "1.0.7"
 		}
@@ -195,12 +195,4 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 			custom_data
 		]
   }
-}
-
-output ip {
-	value = azurerm_public_ip.jumpbox.ip_address
-}
-
-output fqdn {
-	value = azurerm_public_ip.jumpbox.fqdn
 }
