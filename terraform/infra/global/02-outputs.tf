@@ -36,3 +36,9 @@ output "vpn_ip" {
 		tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_1_bgp_peering_address[0].tunnel_ips)[1]
 	]
 }
+
+output "firewall_policy" {
+	value = {
+		canadacentral = azurerm_firewall_policy.canadacentral.id
+	}
+}
