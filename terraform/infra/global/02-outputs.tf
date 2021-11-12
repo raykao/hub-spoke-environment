@@ -29,3 +29,10 @@ output "admin_email" {
 output "vpn_psk" {
 	value = random_string.psk.result
 }
+
+output "vpn_ip" {
+	value = [
+		tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_0_bgp_peering_address[0].tunnel_ips)[1], 
+		tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_1_bgp_peering_address[0].tunnel_ips)[1]
+	]
+}
