@@ -56,6 +56,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "canadacentral" {
 				"*.azure.archive.ubuntu.com",
 				"apt.releases.hashicorp.com",
 				"*.microsoft.com",
+        "*.opensuse.org",
 				"aka.ms",
 				"management.azure.com"
 			]
