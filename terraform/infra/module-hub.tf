@@ -4,12 +4,13 @@ module hub {
 	providers = {
 		azurerm = azurerm.sub1
 	}
+	
 	prefix = "${local.prefix}hub"
 	location = "centralus"
 	contributor_msi = module.global.contributor_msi
 	admin_username = local.admin_username
 	ssh_key = module.global.public_key
-	address_space = cidrsubnet(var.global_address_space, 8, 0)
+	address_space = cidrsubnet(var.global_address_space, 8, 255)
 	global_address_space = var.global_address_space
 	domain = var.domain
 	admin_email = var.admin_email
