@@ -15,6 +15,10 @@ output "keyvault_private_dns_zone_id" {
 	value = azurerm_private_dns_zone.keyvault.id
 }
 
+output "mysql_private_dns_zone_id" {
+	value = azurerm_private_dns_zone.mysql.id
+}
+
 output "pgsql_private_dns_zone_id" {
 	value = azurerm_private_dns_zone.pgsql.id
 }

@@ -11,6 +11,6 @@ module "root-pki" {
 	admin_subnet = azurerm_subnet.jumpbox
 	vm_instances = 2
 	domain = azurerm_private_dns_zone.hub.name
-	pgsql_private_dns_zone_id = azurerm_private_dns_zone.pgsql.id
+	mysql_private_dns_zone_id = azurerm_private_dns_zone.mysql.id
 	keyvault_private_dns_zone_id = azurerm_private_dns_zone.keyvault.id
 }

@@ -3,6 +3,11 @@ resource "azurerm_private_dns_zone" "hub" {
 	resource_group_name = azurerm_resource_group.hub.name
 }
 
+resource "azurerm_private_dns_zone" "mysql" {
+	name                = "privatelink.mysql.database.azure.com"
+	resource_group_name = azurerm_resource_group.hub.name
+}
+
 resource "azurerm_private_dns_zone" "pgsql" {
 	name                = "privatelink.postgres.database.azure.com"
 	resource_group_name = azurerm_resource_group.hub.name
@@ -19,6 +24,13 @@ resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
 	private_dns_zone_name = azurerm_private_dns_zone.hub.name
 	virtual_network_id    = azurerm_virtual_network.hub.id
 	registration_enabled  = true
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "mysql" {
+	name                  = "hub-mysql-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.hub.name
+	private_dns_zone_name = azurerm_private_dns_zone.mysql.name
+	virtual_network_id    = azurerm_virtual_network.hub.id
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "pgsql" {

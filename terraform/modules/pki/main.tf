@@ -26,11 +26,11 @@ variable "ssh_key" {
 	type = string
 }
 
-variable "postgres_admin_username" {
+variable "mysql_admin_username" {
   type = string
   default = ""
 }
-variable postgres_admin_password {
+variable mysql_admin_password {
   type = string
   default = ""
 }
@@ -48,7 +48,7 @@ variable "tenant_id" {
   default = ""
 }
 
-variable "pgsql_private_dns_zone_id" {
+variable "mysql_private_dns_zone_id" {
   type = string
 }
 
@@ -62,8 +62,8 @@ locals {
   prefix = var.prefix
   vm_name = "${local.prefix}-stepca-server"
   tenant_id = var.tenant_id != "" ? var.tenant_id : data.azurerm_client_config.current.tenant_id
-  postgres_admin_username = var.postgres_admin_username != "" ? var.postgres_admin_username : "stepcaadmin"
-  postgres_admin_password = var.postgres_admin_password != "" ? var.postgres_admin_password : random_password.postgres.result
+  mysql_admin_username = var.mysql_admin_username != "" ? var.mysql_admin_username : "stepcaadmin"
+  mysql_admin_password = var.mysql_admin_password != "" ? var.mysql_admin_password : random_password.mysql.result
   systemd = base64encode(file("${path.module}/config/stepca.service"))
   step_config = base64encode(templatefile("${path.module}/config/ca.json", {
     key_name = azurerm_key_vault_certificate.intermediate-ca.name
@@ -86,7 +86,7 @@ terraform {
   }
 }
 
-resource "random_password" "postgres" {
+resource "random_password" "mysql" {
   length           = 32
   min_numeric      = 4
   min_upper        = 4
@@ -99,17 +99,17 @@ resource "random_id" "encrpyt_key" {
   byte_length = 32
 }
 
-resource "azurerm_postgresql_server" "stepca" {
-  name                = "${local.prefix}-stepca-psqlserver"
+resource "azurerm_mysql_server" "stepca" {
+  name                = "${local.prefix}-stepca-mysql"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
 
-  administrator_login          = local.postgres_admin_username
-  administrator_login_password = local.postgres_admin_password
+  administrator_login          = local.mysql_admin_username
+  administrator_login_password = local.mysql_admin_password
 
   sku_name   = "GP_Gen5_2"
-  version    = "11"
-  storage_mb = 65536
+  version    = "8.0"
+  storage_mb = 5120
 
   # backup_retention_days        = 7
   geo_redundant_backup_enabled = false
@@ -120,36 +120,36 @@ resource "azurerm_postgresql_server" "stepca" {
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
 
-resource "azurerm_postgresql_database" "stepca" {
+resource "azurerm_mysql_database" "stepca" {
   name                = "stepca"
   resource_group_name = var.resource_group.name
-  server_name         = azurerm_postgresql_server.stepca.name
-  charset             = "UTF8"
-  collation           = "English_United States.1252"
+  server_name         = azurerm_mysql_server.stepca.name
+  charset             = "utf8"
+  collation           = "utf8_unicode_ci"
 }
 
 resource "time_sleep" "destroy_wait_30_seconds" {
-  depends_on = [azurerm_postgresql_database.stepca]
+  depends_on = [azurerm_mysql_database.stepca]
 
   destroy_duration = "30s"
 }
 
-resource "azurerm_private_endpoint" "pgsql" {
-	name = "${local.prefix}-pe-stepca-pgsql-hub"
+resource "azurerm_private_endpoint" "mysql" {
+	name = "${local.prefix}-pe-stepca-mysql-hub"
 	location = var.resource_group.location
 	resource_group_name = var.resource_group.name
 	subnet_id = var.subnet_id
 
   private_service_connection {
-    name = "${local.prefix}stepca-pgsql-privateserviceconnection"
+    name = "${local.prefix}stepca-mysql-privateserviceconnection"
     is_manual_connection = false
-    private_connection_resource_id = azurerm_postgresql_server.stepca.id
-    subresource_names = ["postgresqlServer"]
+    private_connection_resource_id = azurerm_mysql_server.stepca.id
+    subresource_names = ["mysqlServer"]
   }
 
    private_dns_zone_group {
-    name                  = "pgsql-dns-group"
-    private_dns_zone_ids  = [ var.pgsql_private_dns_zone_id ]
+    name                  = "mysql-dns-group"
+    private_dns_zone_ids  = [ var.mysql_private_dns_zone_id ]
   }
 }
 
@@ -184,8 +184,8 @@ resource "azurerm_role_assignment" "msi_akv" {
   principal_id         = azurerm_user_assigned_identity.stepca.principal_id
 }
 
-resource "azurerm_role_assignment" "msi_postgres_ha_backend" {
-  scope                = azurerm_postgresql_server.stepca.id
+resource "azurerm_role_assignment" "msi_mysql_ha_backend" {
+  scope                = azurerm_mysql_server.stepca.id
   role_definition_name = "Contributor"
   principal_id         = azurerm_user_assigned_identity.stepca.principal_id
 }
