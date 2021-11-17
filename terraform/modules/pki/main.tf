@@ -439,14 +439,14 @@ resource "azurerm_network_security_group" "default" {
   }
 
   security_rule {
-    name                       = "psql-deny"
+    name                       = "mysql-deny"
     priority                   = 300
     description                = ""
     direction                  = "Inbound"
     access                     = "Deny"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "5432"
+    destination_port_range     = "3306"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
