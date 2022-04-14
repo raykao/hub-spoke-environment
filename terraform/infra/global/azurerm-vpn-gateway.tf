@@ -19,7 +19,7 @@ resource "azurerm_vpn_site" "homelab1" {
   location            = azurerm_vpn_gateway.canadacentral.location
   virtual_wan_id      = azurerm_virtual_wan.global.id
 
-  address_cidrs = ["192.168.1.0/24"]
+  address_cidrs = [var.onprem_cidr]
 
   link {
     name       = "home1"

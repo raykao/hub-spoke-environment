@@ -27,3 +27,7 @@ variable "admin_email" {
 variable "admin_groups" {
   
 }
+
+variable "onprem_cidr" {
+  type = string
+}

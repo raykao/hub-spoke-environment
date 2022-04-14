@@ -14,3 +14,7 @@ variable "domain" {
 variable "admin_email" {
 	type = string
 }
+
+variable "onprem_cidr" {
+	type = string
+}
