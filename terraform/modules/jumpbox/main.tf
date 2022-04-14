@@ -140,8 +140,8 @@ resource "azurerm_network_security_group" "jumpbox" {
   }
 }
 
-resource "azurerm_subnet_network_security_group_association" "jumpbox" {
-	subnet_id                 = var.subnet_id
+resource "azurerm_network_interface_security_group_association" "jumpbox" {
+	network_interface_id                 = azurerm_linux_virtual_machine.jumpbox.network_interface_ids[0]
 	network_security_group_id = azurerm_network_security_group.jumpbox.id
 }
 
