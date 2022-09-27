@@ -19,3 +19,13 @@ resource "tls_self_signed_cert" "root-ca" {
     "server_auth",
   ]
 }
+
+resource "local_file" "rootca" {
+  content = tls_self_signed_cert.root-ca.cert_pem
+  filename = "certs/rootca/ca.pem"
+}
+
+resource "local_file" "rootkey" {
+  content = tls_self_signed_cert.root-ca.private_key_pem
+  filename = "certs/rootca/key.pem"
+}

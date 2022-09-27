@@ -50,7 +50,7 @@ resource "azurerm_vpn_server_configuration" "p2s" {
 
   client_root_certificate {
     name             = "Internal-Root-CA"
-    public_cert_data = tls_self_signed_cert.root-ca.cert_pem
+    public_cert_data = trimspace(trimprefix(trimsuffix(trimspace(tls_self_signed_cert.root-ca.cert_pem), "-----END CERTIFICATE-----"), "-----BEGIN CERTIFICATE-----"))
   }
 }
 

@@ -6,3 +6,6 @@ tfplan
 tf*.yaml
 
 certs/
+
+ca.pem
+key.pem
