@@ -9,7 +9,7 @@ resource "azurerm_firewall" "canadacentral" {
 
 	firewall_policy_id = azurerm_firewall_policy.canadacentral.id
 
-	threat_intel_mode = ""
+	threat_intel_mode = "Alert"
 
 	virtual_hub {
 		virtual_hub_id = azurerm_virtual_hub.all["canadacentral"].id

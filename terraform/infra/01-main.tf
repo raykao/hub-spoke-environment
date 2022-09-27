@@ -1,15 +1,10 @@
 terraform {
-	required_providers {
-		azurerm = {
-			source = "hashicorp/azurerm"
-
-		}
-
-		azuread = {
-      source = "hashicorp/azuread"
-      version = "2.6.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.23.0"
     }
-	}
+  }
 }
 
 provider azurerm {
@@ -28,5 +23,13 @@ locals {
 	# global = data.terraform_remote_state.global.outputs
   prefix = var.prefix
   location = "eastus"
-  admin_username = "${local.prefix}admin"
+  admin_username = var.admin_username
+  cidrs = {
+	hub = cidrsubnet(var.global_address_space, 8, 255)
+	onprem = cidrsubnet(var.global_address_space, 16, 0)
+	spoke1 = cidrsubnet(var.global_address_space, 8, 1)
+	spoke2 = cidrsubnet(var.global_address_space, 8, 2)
+	spoke3 = cidrsubnet(var.global_address_space, 8, 3)
+	spoke4 = cidrsubnet(var.global_address_space, 8, 4)
+  }
 }

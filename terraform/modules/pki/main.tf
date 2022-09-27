@@ -485,7 +485,6 @@ resource "azurerm_lb" "default" {
 }
 
 resource "azurerm_lb_probe" "stepca-server" {
-  resource_group_name = var.resource_group.name
   loadbalancer_id     = azurerm_lb.default.id
   name                = "stepca-server-http-probe"
   port                = 80
@@ -493,7 +492,6 @@ resource "azurerm_lb_probe" "stepca-server" {
 
 resource "azurerm_lb_rule" "stepca-server-http" {
   name                           = "stepca-server-http"
-  resource_group_name            = var.resource_group.name
   loadbalancer_id                = azurerm_lb.default.id
   protocol                       = "Tcp"
   frontend_port                  = 80
@@ -507,7 +505,6 @@ resource "azurerm_lb_rule" "stepca-server-http" {
 
 resource "azurerm_lb_rule" "stepca-server-https" {
   name                           = "stepca-server-https"
-  resource_group_name            = var.resource_group.name
   loadbalancer_id                = azurerm_lb.default.id
   protocol                       = "Tcp"
   frontend_port                  = 443

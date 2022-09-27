@@ -31,7 +31,7 @@ resource azurerm_subnet vault {
   virtual_network_name = azurerm_virtual_network.hub.name
   address_prefixes = [cidrsubnet(var.address_space, 12, 7)]
 	service_endpoints    = ["Microsoft.Storage"]
-	enforce_private_link_endpoint_network_policies = true
+	private_endpoint_network_policies_enabled = true
 }
 
 resource azurerm_subnet pki {
@@ -40,7 +40,7 @@ resource azurerm_subnet pki {
   virtual_network_name = azurerm_virtual_network.hub.name
   address_prefixes = [cidrsubnet(var.address_space, 12, 8)]
 	service_endpoints    = ["Microsoft.Storage"]
-	enforce_private_link_endpoint_network_policies = true
+	private_endpoint_network_policies_enabled = true
 }
 
 # resource azurerm_subnet prometheus {

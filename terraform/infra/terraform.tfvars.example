@@ -1,11 +1,12 @@
 ## Required Variables
-prefix = ""
+prefix = "gbb01"
 subId1 = "" # Must be Subscription with CSI Drivers enabled for AKS clusters
 subId2 = ""
-domain = ""
-onprem_cidr = "192.168.1.0/24"
+domain = "example.cloud"
+onprem_cidr = "10.0.0.0"
 global_address_space = "10.0.0.0/8" ## you can use whatever address space you want...but it does expect a /8 cidr
-admin_email = ""
+admin_username="gbbadmin"
+admin_email = "you@email.com"
 admin_groups = {
 	aks = {
 		object_id = ""

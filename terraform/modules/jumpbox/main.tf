@@ -1,11 +1,12 @@
 terraform {
-	required_providers {
-		azurerm = {
-			source = "hashicorp/azurerm"
-
-		}
-	}
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.23.0"
+    }
+  }
 }
+
 
 variable "prefix" {
   type = string
@@ -48,17 +49,18 @@ variable "index" {
 resource "random_string" "suffix" {
 	length  = 4
 	special = false
-	number 	= false
+	numeric 	= false
 	upper 	= false
+}
+
+data "http" "myip" {
+  url = "https://api.ipify.org/"
 }
 
 locals {
 	prefix = "${var.prefix}"
 	index = var.index != "" ? var.index : random_string.suffix.result
-}
-
-data "http" "myip" {
-  url = "https://api.ipify.org/"
+	myip = data.http.myip.response_body
 }
 
 # resource "azurerm_public_ip" "jumpbox" {
@@ -99,7 +101,7 @@ resource "azurerm_network_security_group" "jumpbox" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "2022"
-    source_address_prefix      = "${chomp(data.http.myip.body)}/32"
+    source_address_prefix      = "${chomp(local.myip)}/32"
     destination_address_prefix = "*"
   }
 
@@ -111,7 +113,7 @@ resource "azurerm_network_security_group" "jumpbox" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "2023"
-    source_address_prefix      = "${chomp(data.http.myip.body)}/32"
+    source_address_prefix      = "${chomp(local.myip)}/32"
     destination_address_prefix = "*"
   }
 

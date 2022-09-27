@@ -8,5 +8,5 @@ module global {
 	location = "canadacentral"
 	domain = var.domain
 	admin_email = var.admin_email
-	onprem_cidr = var.onprem_cidr
+	onprem_cidr = local.cidrs.onprem
 }

@@ -18,3 +18,11 @@ variable "admin_email" {
 variable "onprem_cidr" {
 	type = string
 }
+
+variable "virtual_hub_regions" {
+	type = list
+	default = [
+		"canadacentral",
+		"southeastasia"
+	]
+}

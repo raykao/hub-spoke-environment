@@ -8,7 +8,7 @@
 # 	location = "canadacentral"
 # 	contributor_msi = module.global.contributor_msi
 # 	admin_username = local.admin_username
-# 	address_space = cidrsubnet(var.global_address_space, 8, 2)
+# 	address_space = local.cidrs.spoke2
 # 	domain = var.domain
 # 	priv-dns-zone-links = {
 # 		hub = module.hub.vnet.id

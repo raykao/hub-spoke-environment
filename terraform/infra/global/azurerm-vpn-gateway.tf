@@ -3,7 +3,7 @@ resource "random_string" "psk" {
  special = false
  upper = true
  lower = true
- number = true
+ numeric = true
 }
 
 resource "azurerm_vpn_gateway" "canadacentral" {
@@ -23,7 +23,7 @@ resource "azurerm_vpn_site" "homelab1" {
 
   link {
     name       = "home1"
-    ip_address = data.http.myip.body
+    ip_address = data.http.myip.response_body
     speed_in_mbps = 100
   }
 }
@@ -39,5 +39,35 @@ resource "azurerm_vpn_gateway_connection" "homelab1" {
     bandwidth_mbps = 100
     protocol = "IKEv2"
     shared_key = random_string.psk.result
+  }
+}
+
+resource "azurerm_vpn_server_configuration" "p2s" {
+  name                     = "point-to-site-config"
+  resource_group_name      = azurerm_resource_group.global.name
+  location                 = azurerm_resource_group.global.location
+  vpn_authentication_types = ["Certificate"]
+
+  client_root_certificate {
+    name             = "Internal-Root-CA"
+    public_cert_data = tls_self_signed_cert.root-ca.cert_pem
+  }
+}
+
+resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
+  name                        = "canadacentral-vpn-gateway"
+  location                    = azurerm_resource_group.global.location
+  resource_group_name         = azurerm_resource_group.global.name
+  virtual_hub_id              = azurerm_virtual_hub.all["canadacentral"].id
+  vpn_server_configuration_id = azurerm_vpn_server_configuration.p2s.id
+  scale_unit                  = 1
+  connection_configuration {
+    name = "canadacentral-gateway-config"
+
+    vpn_client_address_pool {
+      address_prefixes = [
+        "172.17.0.0/24"
+      ]
+    }
   }
 }
