@@ -32,14 +32,14 @@ resource "azurerm_virtual_hub" "all" {
 #   next_hop          = azurerm_firewall.canadacentral.id
 # }
 
-resource "azurerm_virtual_hub_route_table" "default" {
-  name           = "DefaultRouteTable"
-  virtual_hub_id = azurerm_virtual_hub.all["canadacentral"].id
-  labels         = ["default"]
-}
+# resource "azurerm_virtual_hub_route_table" "default" {
+#   name           = "DefaultRouteTable"
+#   virtual_hub_id = azurerm_virtual_hub.all["canadacentral"].id
+#   labels         = ["default"]
+# }
 
 resource "azurerm_virtual_hub_route_table_route" "default" {
-  route_table_id = azurerm_virtual_hub_route_table.default.id
+  route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
 
   name              = "default-route"
   destinations_type = "CIDR"

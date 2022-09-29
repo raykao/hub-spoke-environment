@@ -67,10 +67,12 @@ resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
     internet_security_enabled = true
 
     route {
-      associated_route_table_id = azurerm_virtual_hub_route_table.default.id
+      # associated_route_table_id = azurerm_virtual_hub_route_table.default.id
+      associated_route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
       propagated_route_table {
         ids = [
-          azurerm_virtual_hub_route_table.default.id
+          # azurerm_virtual_hub_route_table.default.id
+          "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
         ]
       }
     }

@@ -45,7 +45,7 @@ output "firewall_policy" {
 
 output "route_tables" {
 	value = {
-		canadacentral-default = azurerm_virtual_hub_route_table.default.id
+		canadacentral-default = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
 	}
 }
 
