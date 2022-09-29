@@ -21,6 +21,8 @@ resource "azurerm_firewall_policy" "canadacentral" {
   location            = "canadacentral"
 }
 
+
+
 resource "azurerm_firewall_policy_rule_collection_group" "canadacentral" {
 	name               = "canadacentral-fwpolicy-rcg"
   firewall_policy_id = azurerm_firewall_policy.canadacentral.id
@@ -57,6 +59,40 @@ resource "azurerm_firewall_policy_rule_collection_group" "canadacentral" {
         "*.opensuse.org",
 				"aka.ms",
 				"management.azure.com"
+			]
+    }
+  }
+}
+
+resource "azurerm_firewall_policy_rule_collection_group" "jumpbox" {
+	name               = "jumpbox-fwpolicy-rcg"
+  firewall_policy_id = azurerm_firewall_policy.canadacentral.id
+  priority           = 510
+
+	application_rule_collection {
+    name     = "allowAllHttpHttpsOutJumpbox"
+    priority = 110
+    action   = "Allow"
+
+    rule {
+      name = "allowAllJumpboxOutbound"
+      
+			protocols {
+        type = "Http"
+        port = 80
+      }
+
+      protocols {
+        type = "Https"
+        port = 443
+      }
+      
+			source_addresses  = [
+				var.jumpbox_subnet_cidr
+			]
+      
+			destination_fqdns = [
+				"*"
 			]
     }
   }
@@ -147,3 +183,23 @@ nat_rule_collection {
   }
 }
 
+
+resource "azurerm_firewall_policy_rule_collection_group" "vpn-p2s" {
+	name               = "vpn-p2s-fwpolicy-rcg"
+  firewall_policy_id = azurerm_firewall_policy.canadacentral.id
+  priority           = 200
+
+	network_rule_collection {
+		name = "p2s-vpn-allow-all-outbound"
+		priority = 400
+		action = "Allow"
+
+		rule {
+			name = "all"
+			protocols = ["Any"]
+			source_addresses = azurerm_point_to_site_vpn_gateway.canadacentral.connection_configuration[0].vpn_client_address_pool[0].address_prefixes
+			destination_ports = ["*"]
+			destination_addresses = ["*"]
+		} 
+	}
+}

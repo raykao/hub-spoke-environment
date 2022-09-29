@@ -10,7 +10,7 @@ module hub {
 	contributor_msi = module.global.contributor_msi
 	admin_username = local.admin_username
 	ssh_key = module.global.public_key
-	address_space = local.cidrs.hub
+	address_space = local.hub_cidr
 	global_address_space = var.global_address_space
 	domain = var.domain
 	admin_email = var.admin_email
@@ -22,4 +22,8 @@ resource "azurerm_virtual_hub_connection" "hub" {
   	virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
   	remote_virtual_network_id = module.hub.vnet.id
 	internet_security_enabled = true
+
+	routing {
+	  associated_route_table_id = module.global.route_tables.canadacentral-default
+	}
 }
