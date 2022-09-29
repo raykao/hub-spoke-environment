@@ -11,12 +11,13 @@ resource "tls_self_signed_cert" "root-ca" {
     organization = "Internal Root CA - Self Signed Cert Example"
   }
 
+  is_ca_certificate = true
   validity_period_hours = 175320
 
   allowed_uses = [
     "key_encipherment",
     "digital_signature",
-    "server_auth",
+    "cert_signing"
   ]
 }
 
