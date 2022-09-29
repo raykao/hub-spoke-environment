@@ -17,7 +17,7 @@ output hub {
 	}
 }
 
-output vpn_psk {
+output vpn_s2s_pre_shared_key {
 	value = module.global.vpn_psk
 }
 
