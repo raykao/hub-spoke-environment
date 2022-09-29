@@ -3,12 +3,12 @@ resource "azurerm_virtual_network" "hub" {
 	resource_group_name = azurerm_resource_group.hub.name
 	location = azurerm_resource_group.hub.location
 	address_space       = [var.address_space]
-	dns_servers = [
-		cidrhost(local.bind9_address_space, 4),
-		cidrhost(local.bind9_address_space, 5),
-		cidrhost(local.bind9_address_space, 6),
-		"168.63.129.16"
-	]
+	# dns_servers = [
+	# 	cidrhost(local.bind9_address_space, 4),
+	# 	cidrhost(local.bind9_address_space, 5),
+	# 	cidrhost(local.bind9_address_space, 6),
+	# 	"168.63.129.16"
+	# ]
 }
 
 resource azurerm_subnet consul {
