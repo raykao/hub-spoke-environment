@@ -26,3 +26,7 @@ variable "virtual_hub_regions" {
 		"southeastasia"
 	]
 }
+
+variable "jumpbox_subnet_cidr" {
+  type = string
+}

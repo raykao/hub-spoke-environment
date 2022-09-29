@@ -42,3 +42,15 @@ output "firewall_policy" {
 		canadacentral = azurerm_firewall_policy.canadacentral.id
 	}
 }
+
+output "route_tables" {
+	value = {
+		canadacentral-default = azurerm_virtual_hub_route_table.default.id
+	}
+}
+
+output "virtual_hubs" {
+	value = {
+		for hub, obj in azurerm_virtual_hub.all : hub => obj
+	}
+}

@@ -55,7 +55,7 @@ resource "azurerm_vpn_server_configuration" "p2s" {
 }
 
 resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
-  name                        = "canadacentral-vpn-gateway"
+  name                        = "canadacentral-p2s-vpn-gateway"
   location                    = azurerm_resource_group.global.location
   resource_group_name         = azurerm_resource_group.global.name
   virtual_hub_id              = azurerm_virtual_hub.all["canadacentral"].id
@@ -64,6 +64,17 @@ resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
   connection_configuration {
     name = "canadacentral-gateway-config"
 
+    internet_security_enabled = true
+
+    route {
+      associated_route_table_id = azurerm_virtual_hub_route_table.default.id
+      propagated_route_table {
+        ids = [
+          azurerm_virtual_hub_route_table.default.id
+        ]
+      }
+    }
+
     vpn_client_address_pool {
       address_prefixes = [
         "172.17.0.0/24"
@@ -71,3 +82,4 @@ resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
     }
   }
 }
+
