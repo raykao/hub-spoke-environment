@@ -54,3 +54,7 @@ output "virtual_hubs" {
 		for hub, obj in azurerm_virtual_hub.all : hub => obj
 	}
 }
+
+output "firewall_policy_id" {
+	value = azurerm_firewall_policy.canadacentral.id
+}
