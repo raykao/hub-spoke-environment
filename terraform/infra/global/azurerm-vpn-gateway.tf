@@ -18,7 +18,7 @@ resource "azurerm_vpn_site" "homelab1" {
   resource_group_name = azurerm_resource_group.global.name
   location            = azurerm_vpn_gateway.canadacentral.location
   virtual_wan_id      = azurerm_virtual_wan.global.id
-
+  
   address_cidrs = [var.onprem_cidr]
 
   link {
@@ -33,6 +33,8 @@ resource "azurerm_vpn_gateway_connection" "homelab1" {
   vpn_gateway_id     = azurerm_vpn_gateway.canadacentral.id
   remote_vpn_site_id = azurerm_vpn_site.homelab1.id
 
+  internet_security_enabled = true
+  
   vpn_link {
     name             = "homelab1"
     vpn_site_link_id = azurerm_vpn_site.homelab1.link[0].id
@@ -47,6 +49,7 @@ resource "azurerm_vpn_server_configuration" "p2s" {
   resource_group_name      = azurerm_resource_group.global.name
   location                 = azurerm_resource_group.global.location
   vpn_authentication_types = ["Certificate"]
+
 
   client_root_certificate {
     name             = "Internal-Root-CA"
@@ -66,19 +69,19 @@ resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
 
     internet_security_enabled = true
 
-    route {
-      # associated_route_table_id = azurerm_virtual_hub_route_table.default.id
-      associated_route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/defaultRouteTable"
-      propagated_route_table {
-        ids = [
-          # azurerm_virtual_hub_route_table.default.id
-          "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
-        ]
-        labels = [
-          "default"
-        ]
-      }
-    }
+    # route {
+    #   # associated_route_table_id = azurerm_virtual_hub_route_table.default.id
+    #   associated_route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/defaultRouteTable"
+    #   propagated_route_table {
+    #     ids = [
+    #       # azurerm_virtual_hub_route_table.default.id
+    #       "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
+    #     ]
+    #     labels = [
+    #       "default"
+    #     ]
+    #   }
+    # }
 
     vpn_client_address_pool {
       address_prefixes = [

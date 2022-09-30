@@ -23,7 +23,7 @@ resource "azurerm_virtual_hub_connection" "hub" {
   	remote_virtual_network_id = module.hub.vnet.id
 	internet_security_enabled = true
 
-	routing {
-	  associated_route_table_id = module.global.route_tables.canadacentral-default
-	}
+	# routing {
+	#   associated_route_table_id = module.global.route_tables.canadacentral-default
+	# }
 }
