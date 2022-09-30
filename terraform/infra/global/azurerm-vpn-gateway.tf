@@ -65,7 +65,7 @@ resource "azurerm_point_to_site_vpn_gateway" "canadacentral" {
   vpn_server_configuration_id = azurerm_vpn_server_configuration.p2s.id
   scale_unit                  = 1
   connection_configuration {
-    name = "canadacentral-gateway-config"
+    name = "canadacentral-p2s-gateway-config"
 
     internet_security_enabled = true
 
