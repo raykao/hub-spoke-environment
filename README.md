@@ -88,3 +88,4 @@ Some steps are not yet available as TF config settings.  You must manually enabl
 
 ### Change AzureVPN Version
 - Change VPN XML value to version 2
+- [How do I direct all traffic to the VPN tunnel (forced tunneling)?](https://learn.microsoft.com/en-us/azure/vpn-gateway/openvpn-azure-ad-client#forced-tunnel)
