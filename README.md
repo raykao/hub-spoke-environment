@@ -72,3 +72,19 @@ openssl rsa -in combined-cert.pem -out private.key
 # Create x509 public cert fingerprint
 openssl x509 -noout -fingerprint -sha1 -inform pem -in combined-cert.pem 
 ```
+
+## Securing Hubs
+
+Some steps are not yet available as TF config settings.  You must manually enable these features via the Azure Portal.
+
+### Force Tunnelling
+- Add UDR Route on Default Route
+  - 0.0.0.0/0 -> Next Hop: Azure Firewall
+
+### Secure Hubs/Connections
+- Manually Enable this in Azure Firewall Manager for each Hub:Security Configuration
+  - Internet Traffic -> Azure Firewall
+  - Private Traffice -> Bypass Azure Firewall
+
+### Change AzureVPN Version
+- Change VPN XML value to version 2
