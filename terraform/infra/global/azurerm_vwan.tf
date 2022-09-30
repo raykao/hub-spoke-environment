@@ -16,15 +16,15 @@ resource "azurerm_virtual_hub" "all" {
 	address_prefix      = "172.16.${each.value}.0/24"
 }
 
-resource "azurerm_virtual_hub_route_table_route" "default" {
-  route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
+# resource "azurerm_virtual_hub_route_table_route" "default" {
+#   route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
 
-  name              = "public-internet"
-  destinations_type = "CIDR"
-  destinations      = ["0.0.0.0/0"]
-  next_hop_type     = "ResourceId"
-  next_hop          = azurerm_firewall.canadacentral.id
-}
+#   name              = "public-internet"
+#   destinations_type = "CIDR"
+#   destinations      = ["0.0.0.0/0"]
+#   next_hop_type     = "ResourceId"
+#   next_hop          = azurerm_firewall.canadacentral.id
+# }
 
 # resource "azurerm_virtual_hub_route_table" "canadacentral-default" {
 #   name           = "canadacentral-default-vhubroutetable"
