@@ -7,8 +7,8 @@ resource "tls_cert_request" "vpn-client-csr" {
   private_key_pem = tls_private_key.vpn-client-key.private_key_pem
 
   subject {
-    common_name  = "client3.${azurerm_private_dns_zone.global.name}"
-    organization = "Internal Root CA - Self Signed Cert Example - Client"
+    common_name  = "client.${var.prefix}.${azurerm_private_dns_zone.global.name}"
+    organization = azurerm_private_dns_zone.global.name
   }
 }
 
@@ -41,7 +41,7 @@ resource "local_file" "client-key" {
 }
 
 resource "pkcs12_from_pem" "client-cert" {
-  password = "mypassword"
+  password = var.client_cert_password
   cert_pem = tls_locally_signed_cert.vpn-client-signed-cert.cert_pem
   private_key_pem = tls_private_key.vpn-client-key.private_key_pem
 }

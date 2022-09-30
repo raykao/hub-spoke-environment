@@ -7,8 +7,8 @@ resource "tls_self_signed_cert" "root-ca" {
   private_key_pem = tls_private_key.root-key.private_key_pem
 
   subject {
-    common_name  = azurerm_private_dns_zone.global.name
-    organization = "Internal Root CA - Self Signed Cert Example"
+    common_name  = "ca.${var.prefix}.${azurerm_private_dns_zone.global.name}"
+    organization = azurerm_private_dns_zone.global.name
   }
 
   is_ca_certificate = true

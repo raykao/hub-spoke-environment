@@ -30,3 +30,8 @@ variable "virtual_hub_regions" {
 variable "jumpbox_subnet_cidr" {
   type = string
 }
+
+variable "client_cert_password" {
+  type = string
+  default = "mypassword"
+}
