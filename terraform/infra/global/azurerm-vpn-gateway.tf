@@ -75,7 +75,7 @@ resource "azurerm_point_to_site_vpn_gateway" "p2s" {
 		for idx, region in var.virtual_hub_regions: region => idx
 	}
   name                        = "${each.key}-p2s-vpn-gw"
-  location                    = azurerm_resource_group.global.location
+  location                    = each.key
   resource_group_name         = azurerm_resource_group.global.name
   virtual_hub_id              = azurerm_virtual_hub.all[each.key].id
   vpn_server_configuration_id = azurerm_vpn_server_configuration.p2s[each.key].id
