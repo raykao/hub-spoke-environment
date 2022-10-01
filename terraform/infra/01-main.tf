@@ -28,15 +28,22 @@ provider "pkcs12" {
 }
 
 locals {
-	# global = data.terraform_remote_state.global.outputs
 	prefix = var.prefix
-	location = "eastus"
+
 	admin_username = var.admin_username
-	hub_cidr = cidrsubnet(var.global_address_space, 8, 255)
-	jumpbox_cidr = cidrsubnet(local.hub_cidr, 8, 255)
-	onprem_cidr = cidrsubnet(var.global_address_space, 16, 0)
-	spoke1_cidr = cidrsubnet(var.global_address_space, 8, 1)
-	spoke2_cidr = cidrsubnet(var.global_address_space, 8, 2)
-	spoke3_cidr = cidrsubnet(var.global_address_space, 8, 3)
-	spoke4_cidr = cidrsubnet(var.global_address_space, 8, 4)
+	admin_email = var.admin_email
+	public_key = var.admin_pub_ssh_key
+	
+	domain = var.domain
+
+	global_address_space = var.global_address_space
+	onprem_cidr = var.onprem_cidr
+	
+	hub_location = "canadacentral"
+	hub_cidr = cidrsubnet(local.global_address_space, 8, 255)
+	
+	spoke1_cidr = cidrsubnet(local.global_address_space, 8, 1)
+	spoke2_cidr = cidrsubnet(local.global_address_space, 8, 2)
+	spoke3_cidr = cidrsubnet(local.global_address_space, 8, 3)
+	spoke4_cidr = cidrsubnet(local.global_address_space, 8, 4)
 }

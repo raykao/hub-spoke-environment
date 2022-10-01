@@ -10,5 +10,4 @@ module global {
 	domain = var.domain
 	admin_email = var.admin_email
 	onprem_cidr = local.onprem_cidr
-	jumpbox_subnet_cidr = local.jumpbox_cidr
 }

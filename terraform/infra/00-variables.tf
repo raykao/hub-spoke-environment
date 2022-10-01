@@ -1,6 +1,5 @@
 variable "prefix" {
   type = string
-  default = "rk"
 }
 
 variable "subId1" {
@@ -21,11 +20,6 @@ variable "global_address_space" {
   default = "10.0.0.0/8"
 }
 
-variable "primary_location" {
-  type = string
-  default = "canadacentral"
-}
-
 variable "virtual_hub_regions" {
   type = list
   default = [
@@ -40,11 +34,16 @@ variable "domain" {
 
 variable "admin_username" {
   type = string
-  default = "gbbadmin"
 }
 
 variable "admin_email" {
   type = string
+}
+
+variable "admin_pub_ssh_key" {
+  type = string
+  default = "~/.ssh/id_rsa.pub"
+  description = "Path to your id_rsa.pub"
 }
 
 variable "admin_groups" {

@@ -6,10 +6,6 @@ output "resource_group" {
 	value = azurerm_resource_group.global
 }
 
-output "public_key" {
-	value = local_file.id_rsa-pub.content
-}
-
 output "private_dns_zone" {
 	value = azurerm_private_dns_zone.global
 }

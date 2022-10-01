@@ -12,7 +12,11 @@ variable "admin_username" {
 	default = ""
 }
 
-variable "ssh_key" {
+variable "admin_email" {
+	type = string
+}
+
+variable "public_key" {
 	type = string
 }
 
@@ -25,9 +29,5 @@ variable "global_address_space" {
 }
 
 variable "domain" {
-	type = string
-}
-
-variable "admin_email" {
 	type = string
 }
