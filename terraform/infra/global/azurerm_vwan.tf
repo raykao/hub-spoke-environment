@@ -9,7 +9,7 @@ resource "azurerm_virtual_hub" "all" {
 	for_each = {
 		for idx, region in var.virtual_hub_regions: region => idx
 	}
-	name                = "${each.key}-hub"
+	name                = "${each.key}"
 	resource_group_name = azurerm_resource_group.global.name
 	location            = "${each.key}"
 	virtual_wan_id      = azurerm_virtual_wan.global.id

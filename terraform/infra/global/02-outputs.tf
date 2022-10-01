@@ -6,10 +6,6 @@ output "resource_group" {
 	value = azurerm_resource_group.global
 }
 
-output "contributor_msi" {
-	value = azurerm_user_assigned_identity.contributor
-}
-
 output "public_key" {
 	value = local_file.id_rsa-pub.content
 }
@@ -30,18 +26,13 @@ output "vpn_psk" {
 	value = random_string.psk.result
 }
 
-output "vpn_ip" {
-	value = [
-		tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_0_bgp_peering_address[0].tunnel_ips)[1], 
-		tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_1_bgp_peering_address[0].tunnel_ips)[1]
-	]
-}
-
-output "firewall_policy" {
-	value = {
-		canadacentral = azurerm_firewall_policy.canadacentral.id
-	}
-}
+# output "vpn_ip" {
+# 	value = [
+# 		for idx, region in var.virtual_hub_regions: azurerm_vpn_gateway.all["${region}"].name => idx
+# 	]
+# 	tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_0_bgp_peering_address[0].tunnel_ips)[1], 
+# 		tolist(azurerm_vpn_gateway.canadacentral.bgp_settings[0].instance_1_bgp_peering_address[0].tunnel_ips)[1]
+# }
 
 output "route_tables" {
 	value = {
@@ -55,6 +46,8 @@ output "virtual_hubs" {
 	}
 }
 
-output "firewall_policy_id" {
-	value = azurerm_firewall_policy.canadacentral.id
+output "firewall_policy_ids" {
+	value = {
+		for k, instance in azurerm_firewall_policy.hubs: instance.location => azurerm_firewall_policy.hubs["${instance.location}"].id
+	}
 }

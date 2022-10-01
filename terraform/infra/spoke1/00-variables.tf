@@ -7,9 +7,6 @@ variable "location" {
 	default = "canadacentral"
 }
 
-variable "contributor_msi" {
-}
-
 variable "admin_username" {
 	type = string
 	default = ""

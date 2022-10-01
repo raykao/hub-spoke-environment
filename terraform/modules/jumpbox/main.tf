@@ -7,7 +7,6 @@ terraform {
   }
 }
 
-
 variable "prefix" {
   type = string
 }
@@ -30,11 +29,6 @@ variable "admin_username" {
 
 variable "ssh_key" {
 	type = string
-}
-
-variable userMSI {
-	type = string
-	default = ""
 }
 
 variable "admin_email" {
@@ -62,15 +56,6 @@ locals {
 	index = var.index != "" ? var.index : random_string.suffix.result
 	myip = data.http.myip.response_body
 }
-
-# resource "azurerm_public_ip" "jumpbox" {
-# 	name                = "${local.prefix}jumpbox${local.index}-pip"
-# 	resource_group_name = var.resource_group.name
-# 	location            = var.resource_group.location
-# 	allocation_method   = "Static"
-# 	sku 								= "Standard"
-#   domain_name_label 	= "${local.prefix}jumpbox${local.index}"
-# }
 
 resource "azurerm_network_interface" "jumpbox" {
 	name                = "${local.prefix}jumpbox${local.index}-nic"
@@ -168,10 +153,7 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 	]
 
 	identity {
-		type = var.userMSI == "" ? "SystemAssigned" : "UserAssigned"
-		identity_ids = var.userMSI == "" ? [] : [
-			var.userMSI
-		]	
+		type = "SystemAssigned"
 	}
 
 	admin_ssh_key {

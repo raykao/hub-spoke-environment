@@ -1,6 +1,5 @@
 module "jumpbox" {	
 	source = "../../modules/jumpbox"
-	userMSI = var.contributor_msi.id
 	prefix = local.prefix
 	resource_group = azurerm_resource_group.spoke1
 	subnet_id = azurerm_subnet.jumpbox.id

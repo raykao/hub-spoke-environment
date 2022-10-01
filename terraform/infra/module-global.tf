@@ -6,7 +6,7 @@ module global {
 		pkcs12 = pkcs12
 	}
 	prefix = local.prefix
-	location = "canadacentral"
+	virtual_hub_regions = var.virtual_hub_regions
 	domain = var.domain
 	admin_email = var.admin_email
 	onprem_cidr = local.onprem_cidr

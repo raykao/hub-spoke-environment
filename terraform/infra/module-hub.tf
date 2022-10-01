@@ -7,7 +7,7 @@ module hub {
 	
 	prefix = "${local.prefix}hub"
 	location = "centralus"
-	contributor_msi = module.global.contributor_msi
+	# contributor_msi = module.global.contributor_msi
 	admin_username = local.admin_username
 	ssh_key = module.global.public_key
 	address_space = local.hub_cidr

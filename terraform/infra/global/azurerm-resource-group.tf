@@ -1,4 +1,4 @@
 resource "azurerm_resource_group" "global" {
   	name = "${local.prefix}global"
-  	location = var.location
+  	location = var.virtual_hub_regions[0]
 }

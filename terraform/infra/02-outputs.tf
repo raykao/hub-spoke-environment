@@ -21,6 +21,6 @@ output vpn_s2s_pre_shared_key {
 	value = module.global.vpn_psk
 }
 
-output vpn_ip {
-	value = module.global.vpn_ip
-}
+# output vpn_ip {
+# 	value = module.global.vpn_ip
+# }
