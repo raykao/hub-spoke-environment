@@ -4,13 +4,13 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "local_file" "id_rsa" {
-  filename = "certs/${terraform.workspace}/global/id_rsa"
+  filename = "certs/jumpbox/${local.name}/id_rsa"
   content  = tls_private_key.ssh.private_key_pem
   file_permission = "0600"
 }
 
 resource "local_file" "id_rsa-pub" {
-  filename = "certs/${terraform.workspace}/global/id_rsa.pub"
+  filename = "certs/jumpbox/${local.name}/id_rsa.pub"
   content  = tls_private_key.ssh.public_key_openssh
   file_permission = "0600"
 }

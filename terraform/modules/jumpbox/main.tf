@@ -27,8 +27,9 @@ variable "admin_username" {
 	type = string
 }
 
-variable "ssh_key" {
+variable "public_key" {
 	type = string
+	default = ""
 }
 
 variable "admin_email" {
@@ -53,12 +54,17 @@ data "http" "myip" {
 
 locals {
 	prefix = "${var.prefix}"
-	index = var.index != "" ? var.index : random_string.suffix.result
+	suffix = var.index != "" ? var.index : random_string.suffix.result
+	name = "${local.prefix}jumpbox${local.suffix}"
 	myip = data.http.myip.response_body
+
+	admin_username = var.admin_username
+	admin_email = var.admin_email
+	public_key = var.public_key != "" ? file(var.public_key) : tls_private_key.ssh.public_key_openssh
 }
 
 resource "azurerm_network_interface" "jumpbox" {
-	name                = "${local.prefix}jumpbox${local.index}-nic"
+	name                = "${local.name}-nic"
 	location            = var.resource_group.location
 	resource_group_name = var.resource_group.name
 
@@ -74,7 +80,7 @@ resource "azurerm_network_interface" "jumpbox" {
 
 resource "azurerm_network_security_group" "jumpbox" {
   
-	name                = "JumpboxNSG"
+	name                = "${local.name}-nsg"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
 
@@ -129,21 +135,21 @@ resource "azurerm_network_security_group" "jumpbox" {
 
 resource "azurerm_network_interface_security_group_association" "jumpbox" {
 	network_interface_id                 = azurerm_linux_virtual_machine.jumpbox.network_interface_ids[0]
-	network_security_group_id = azurerm_network_security_group.jumpbox.id
+	network_security_group_id 			 = azurerm_network_security_group.jumpbox.id
 }
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
-	name                = "${local.prefix}jumpbox${local.index}"
+	name                = local.name
 	resource_group_name = var.resource_group.name
 	location            = var.resource_group.location
 	size                = var.vm_size
-	admin_username      = var.admin_username
+	admin_username      = local.admin_username
 	custom_data = base64encode(
 		templatefile("${path.module}/config/jumpbox-cloud-init.yaml", 
 		{ 
-			admin_username = var.admin_username
+			admin_username = local.admin_username
 			# url = azurerm_public_ip.jumpbox.fqdn
-			admin_email = var.admin_email
+			admin_email = local.admin_email
 			terraform_version = "1.0.7"
 		}
 	))
@@ -157,8 +163,8 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
 	}
 
 	admin_ssh_key {
-		username   = var.admin_username
-		public_key = var.ssh_key
+		username   = local.admin_username
+		public_key = local.public_key
 	}
 
 	os_disk {
