@@ -16,34 +16,18 @@ resource "azurerm_virtual_hub" "all" {
 	address_prefix      = "172.16.${each.value}.0/24"
 }
 
-# resource "azurerm_virtual_hub_route_table_route" "default" {
-#   route_table_id = "${azurerm_virtual_hub.all["canadacentral"].id}/hubRouteTables/DefaultRouteTable"
+# This will auto forcetunnel/secure all connected networks through the AzFW in given Hub
+# Must associate with the defualt rote table and name it "public_traffic"
+resource "azurerm_virtual_hub_route_table_route" "default" {
+	for_each = {
+		for idx, region in var.virtual_hub_regions: region => idx
+	}
+	
+	route_table_id = azurerm_virtual_hub.all[each.key].default_route_table_id
 
-#   name              = "public-internet"
-#   destinations_type = "CIDR"
-#   destinations      = ["0.0.0.0/0"]
-#   next_hop_type     = "ResourceId"
-#   next_hop          = azurerm_firewall.canadacentral.id
-# }
-
-# resource "azurerm_virtual_hub_route_table" "canadacentral-default" {
-#   name           = "canadacentral-default-vhubroutetable"
-#   virtual_hub_id = azurerm_virtual_hub.all["canadacentral"].id
-#   labels         = ["default"]
-# }
-
-# resource "azurerm_virtual_hub_route_table_route" "canada-default" {
-#   route_table_id = azurerm_virtual_hub_route_table.canadacentral-default.id
-
-#   name              = "default-route"
-#   destinations_type = "CIDR"
-#   destinations      = ["0.0.0.0/1", "128.0.0.0/1"]
-#   next_hop_type     = "ResourceId"
-#   next_hop          = azurerm_firewall.canadacentral.id
-# }
-
-# resource "azurerm_virtual_hub_route_table" "default" {
-#   name           = "DefaultRouteTable"
-#   virtual_hub_id = azurerm_virtual_hub.all["canadacentral"].id
-#   labels         = ["default"]
-# }
+	name              = "public_traffic"
+	destinations_type = "CIDR"
+	destinations      = ["0.0.0.0/0"]
+	next_hop_type     = "ResourceId"
+	next_hop          = azurerm_firewall.hubs[each.key].id
+}
