@@ -11,6 +11,16 @@ terraform {
   }
 }
 
+
+resource "random_string" "suffix" {
+	length  = 4
+	special = false
+	numeric 	= false
+	upper 	= false
+}
+
 locals {
-  name = "${var.prefix}-${var.resource_group.location}-aca"
+  prefix = var.prefix
+  suffix = random_string.suffix.result
+  name = "${local.prefix}aca${local.suffix}"
 }

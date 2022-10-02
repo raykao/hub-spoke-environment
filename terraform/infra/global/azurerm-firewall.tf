@@ -32,8 +32,8 @@ resource "azurerm_firewall_policy_rule_collection_group" "hubs" {
 		for idx, region in var.virtual_hub_regions: region => idx
 	}
 	name               = "fwpolicy-${each.key}-rcg"
-  firewall_policy_id = azurerm_firewall_policy.hubs["${each.key}"].id
-  priority           = 100
+	firewall_policy_id = azurerm_firewall_policy.hubs["${each.key}"].id
+  	priority           = 100
 
 	application_rule_collection {
     name     = "ubuntuUpdates"
@@ -41,32 +41,34 @@ resource "azurerm_firewall_policy_rule_collection_group" "hubs" {
     action   = "Allow"
 
     rule {
-      name = "app_rule_collection1_rule1"
-      
-			protocols {
-        type = "Http"
-        port = 80
-      }
+		name = "app_rule_collection1_rule1"
+		
+				protocols {
+			type = "Http"
+			port = 80
+		}
 
-      protocols {
-        type = "Https"
-        port = 443
-      }
-      
-			source_addresses  = [
-				"*"
-			]
-      
-			destination_fqdns = [
-				"*.ubuntu.com",
-				"*.archive.ubuntu.com",
-				"*.azure.archive.ubuntu.com",
-				"apt.releases.hashicorp.com",
-				"*.microsoft.com",
-        "*.opensuse.org",
-				"aka.ms",
-				"management.azure.com"
-			]
+		protocols {
+			type = "Https"
+			port = 443
+		}
+		
+		source_addresses  = [
+			"*"
+		]
+
+		destination_fqdns = [
+			"*.ubuntu.com",
+			"*.archive.ubuntu.com",
+			"*.azure.archive.ubuntu.com",
+			"apt.releases.hashicorp.com",
+			"*.hashicorp.com",
+			"*.microsoft.com",
+			"*.opensuse.org",
+			"aka.ms",
+			"management.azure.com",
+			"api.snapcraft.io"
+		]
     }
   }
 }
@@ -211,4 +213,182 @@ resource "azurerm_firewall_policy_rule_collection_group" "vpn-p2s" {
 			destination_addresses = ["*"]
 		} 
 	}
+}
+
+resource "azurerm_firewall_policy_rule_collection_group" "aca" {
+  for_each = {
+		for idx, region in var.virtual_hub_regions: region => idx
+	}
+	name               = "fwpolicy-aca-rcg"
+	firewall_policy_id = azurerm_firewall_policy.hubs[each.key].id
+  	priority           = 300
+
+	application_rule_collection {
+	  name = "aca-app-allow-all-outbound"
+	  priority = 200
+	  action = "Allow"
+
+	  rule {
+		name = "all-http"
+
+		protocols {
+		  type = "Https"
+		  port = 443
+		}
+
+		protocols {
+		  type = "Http"
+		  port = 80
+		}
+
+		source_addresses = [
+			"10.255.8.0/23"
+		]
+		destination_fqdns = ["*"]
+	  }
+	}
+
+	network_rule_collection {
+		name = "aca-network-allow-all-outbound"
+		priority = 300
+		action = "Allow"
+
+		rule {
+			name = "all-network"
+			protocols = ["Any"]
+			source_addresses = [
+				"10.255.8.0/23"
+			]
+			destination_ports = ["*"]
+			destination_addresses = ["*"]
+		} 
+	}
+
+
+# 	application_rule_collection {
+#     name     = "acaAppRules"
+#     priority = 100
+#     action   = "Allow"
+
+#     rule {
+#       	name = "hcp"
+
+# 		protocols {
+# 			type = "Https"
+# 			port = 443
+# 		}
+      
+# 		source_addresses  = ["*"]
+# 		destination_fqdns = [
+# 			"*.hcp.${each.key}.azmk8s.io"
+# 		]
+#     }
+
+# 	rule {
+#       	name = "mcr"
+
+# 		protocols {
+# 			type = "Https"
+# 			port = 443
+# 		}
+      
+# 		source_addresses  = ["*"]
+# 		destination_fqdns = [
+# 			"mcr.microsoft.com",
+# 			"*.data.mcr.microsoft.com"
+# 		]
+#     }
+
+# 	rule {
+# 		name = "ubuntu"
+# 		protocols {
+# 		  type = "Http"
+# 		  port = 80
+# 		}
+
+# 		protocols {
+# 		  type = "Https"
+# 		  port = 443
+# 		}
+
+# 		source_addresses = ["*"]
+# 		destination_fqdns = [
+# 			"security.ubuntu.com",
+# 			"azure.archive.ubuntu.com",
+# 			"*.azure.archive.ubuntu.com",
+# 			"changelogs.ubuntu.com",
+# 			"motd.ubuntu.com",
+# 			"*.opensuse.org",
+# 		]
+# 	}
+
+# 	rule {
+#       	name = "azure"
+
+# 		protocols {
+# 			type = "Https"
+# 			port = 443
+# 		}
+      
+# 		source_addresses  = ["*"]
+# 		destination_fqdns = [
+# 			"management.azure.com",
+# 			"login.microsoftonline.com",
+# 			"packages.microsoft.com",
+# 			"acs-mirror.azureedge.net",
+# 			"dc.services.visualstudio.com",
+# 			"graph.microsoft.com",
+# 			"aka.ms",
+# 			"*.microsoft.com",
+#       "*.blob.core.windows.net",
+#       "*.blob.storage.azure.net",
+# 		]
+#     }
+
+# 	rule {
+#       	name = "azure-monitor"
+
+# 		protocols {
+# 			type = "Https"
+# 			port = 443
+# 		}
+      
+# 		source_addresses  = ["*"]
+# 		destination_fqdns = [
+# 			"*.ods.opinsights.azure.com",
+# 			"*.oms.opinsights.azure.com",
+# 			"*.monitoring.azure.com",
+
+# 		]
+#     }
+
+# 	rule {
+#       	name = "azure-policy"
+
+# 		protocols {
+# 			type = "Https"
+# 			port = 443
+# 		}
+      
+# 		source_addresses  = ["*"]
+# 		destination_fqdns = [
+# 			"data.policy.core.windows.net",
+# 			"store.policy.core.windows.net",
+# 			"dc.services.visualstudio.com"
+# 		]
+#     }
+
+# 	rule {
+#       	name = "aks"
+
+# 		protocols {
+# 			type = "Https"
+# 			port = 443
+# 		}
+      
+# 		source_addresses  = ["*"]
+# 		destination_fqdn_tags = ["AzureKubernetesService"]
+		
+#     }
+#   }
 }

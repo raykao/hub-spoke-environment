@@ -7,6 +7,7 @@ module hub {
 	
 	prefix = "${local.prefix}"
 	location = local.hub_location
+	
 	admin_username = local.admin_username
 	admin_email = local.admin_email
 	public_key = local.public_key
@@ -14,6 +15,8 @@ module hub {
 	domain = local.domain
 	address_space = local.hub_cidr
 	global_address_space = local.global_address_space
+
+	firewall_policy_id = module.global.firewall_policy_ids[local.hub_location]
 }
 
 resource "azurerm_virtual_hub_connection" "hub" {

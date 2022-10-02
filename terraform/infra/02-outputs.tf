@@ -24,3 +24,7 @@ output vpn_s2s_pre_shared_key {
 # output vpn_ip {
 # 	value = module.global.vpn_ip
 # }
+
+output "firewall_policy_ids" {
+  value = module.global.firewall_policy_ids
+}

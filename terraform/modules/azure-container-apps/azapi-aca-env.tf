@@ -1,5 +1,5 @@
 resource "azapi_resource" "aca-env" {
-  type          = "Microsoft.App/managedEnvironments@2022-03-01"
+  type          = "Microsoft.App/managedEnvironments@2022-06-01-preview"
   parent_id     = var.resource_group.id
   location      = var.resource_group.location
   name          = "${local.name}"

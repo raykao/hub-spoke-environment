@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.23.0"
     }
+	azapi = {
+      source = "Azure/azapi"
+      version = "~> 1.0.0"
+    }
 	pkcs12 = {
       source = "chilicat/pkcs12"
       version = "0.0.7"
@@ -25,6 +29,10 @@ provider azurerm {
 
 provider "pkcs12" {
   # Configuration options
+}
+
+provider "azapi" {
+  
 }
 
 locals {
