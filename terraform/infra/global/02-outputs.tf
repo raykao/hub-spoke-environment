@@ -47,3 +47,9 @@ output "firewall_policy_ids" {
 		for k, instance in azurerm_firewall_policy.hubs: instance.location => azurerm_firewall_policy.hubs["${instance.location}"].id
 	}
 }
+
+output "private_dns_zone_ids" {
+	value = [
+		azurerm_private_dns_zone.global.id
+	]
+}
