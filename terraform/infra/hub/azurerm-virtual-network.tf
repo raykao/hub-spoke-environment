@@ -69,5 +69,5 @@ resource azurerm_subnet jumpbox {
 	name = "JumpboxSubnet"
 	resource_group_name  = azurerm_resource_group.hub.name
 	virtual_network_name = azurerm_virtual_network.hub.name
-	address_prefixes     = [cidrsubnet(var.address_space, 8, 255)]
+	address_prefixes     = [var.jumpbox_cidr]
 }

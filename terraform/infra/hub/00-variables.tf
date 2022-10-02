@@ -22,8 +22,8 @@ variable "address_space" {
 	type = string
 }
 
-variable "global_address_space" {
-	type = string
+variable "jumpbox_cidr" {
+  type = string
 }
 
 variable "domain" {

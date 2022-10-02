@@ -14,6 +14,10 @@ variable "onprem_cidr" {
 	type = string
 }
 
+variable "jumpbox_cidr" {
+  type = string
+}
+
 variable "virtual_hub_regions" {
 	type = list
 	default = [
