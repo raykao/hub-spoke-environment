@@ -4,12 +4,10 @@ variable "prefix" {
 
 variable "location" {
 	type = string
-	default = "canadacentral"
 }
 
 variable "admin_username" {
 	type = string
-	default = ""
 }
 
 variable "admin_email" {
@@ -30,4 +28,13 @@ variable "global_address_space" {
 
 variable "domain" {
 	type = string
+}
+
+variable "firewall_policy_id" {
+  	type = string
+}
+
+variable "region" {
+  type = string
+  default = "hub"
 }

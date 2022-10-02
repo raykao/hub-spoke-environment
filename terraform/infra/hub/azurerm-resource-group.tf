@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "hub" {
-  	name = "${local.prefix}"
+  	name = "${local.name}"
   	location = var.location
 }
 
