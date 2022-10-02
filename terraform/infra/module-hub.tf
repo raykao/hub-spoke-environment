@@ -15,14 +15,7 @@ module hub {
 	admin_email = local.admin_email
 	public_key = local.public_key
 
+	vwan_hub_id = module.global.virtual_hubs[local.hub_location].id
 
 	firewall_policy_id = module.global.firewall_policy_ids[local.hub_location]
-}
-
-resource "azurerm_virtual_hub_connection" "hub" {
-	provider 				  = azurerm.sub1
-  	name                      = "${local.hub_location}-hub-vhub"
-  	virtual_hub_id            = module.global.virtual_hubs[local.hub_location].id
-  	remote_virtual_network_id = module.hub.vnet.id
-	internet_security_enabled = true
 }

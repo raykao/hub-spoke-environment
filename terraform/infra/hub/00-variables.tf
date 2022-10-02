@@ -38,3 +38,7 @@ variable "region" {
   type = string
   default = "hub"
 }
+
+variable "vwan_hub_id" {
+	type = string
+}
