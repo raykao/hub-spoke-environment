@@ -223,6 +223,22 @@ resource "azurerm_firewall_policy_rule_collection_group" "aca" {
 	firewall_policy_id = azurerm_firewall_policy.hubs[each.key].id
   	priority           = 300
 
+	network_rule_collection {
+		name = "aca-network-allow-all-outbound"
+		priority = 100
+		action = "Allow"
+
+		rule {
+			name = "all-network"
+			protocols = ["Any"]
+			source_addresses = [
+				"10.255.8.0/23"
+			]
+			destination_ports = ["*"]
+			destination_addresses = ["*"]
+		} 
+	}
+
 	application_rule_collection {
 	  name = "aca-app-allow-all-outbound"
 	  priority = 200
@@ -246,22 +262,6 @@ resource "azurerm_firewall_policy_rule_collection_group" "aca" {
 		]
 		destination_fqdns = ["*"]
 	  }
-	}
-
-	network_rule_collection {
-		name = "aca-network-allow-all-outbound"
-		priority = 300
-		action = "Allow"
-
-		rule {
-			name = "all-network"
-			protocols = ["Any"]
-			source_addresses = [
-				"10.255.8.0/23"
-			]
-			destination_ports = ["*"]
-			destination_addresses = ["*"]
-		} 
 	}
 
 

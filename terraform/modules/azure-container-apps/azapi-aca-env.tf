@@ -4,6 +4,13 @@ resource "azapi_resource" "aca-env" {
   location      = var.resource_group.location
   name          = "${local.name}"
   
+  # Likely will need a property like this for setting UDR on ACA
+  # Not supported as of Oct 2022
+  #
+  # sku = {
+  #   name = "Premium"
+  # }
+
   body = jsonencode({
     properties = {
         appLogsConfiguration = {
@@ -16,6 +23,13 @@ resource "azapi_resource" "aca-env" {
         vnetConfiguration = {
             internal = true
             infrastructureSubnetId = var.subnet_id
+            dockerBridgeCidr = var.dockerBridgeCidr
+            platformReservedCidr = var.platformReservedCidr
+            platformReservedDnsIP = var.platformReservedDnsIP
+            # outboundSettings = {
+            #   # Default is LoadBalancing
+            #   # outBoundType = "UserDefinedRouting"
+            # }
         }
     }
   })

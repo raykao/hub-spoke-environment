@@ -15,6 +15,22 @@ variable "subnet_prefix" {
   type = string
 }
 
+variable "dockerBridgeCidr" {
+  type = string
+  default = "172.18.0.0/16"
+} 
+
+variable "platformReservedCidr" {
+  type = string
+  default = "172.19.0.0/16"
+}
+ 
+variable "platformReservedDnsIP" {
+  type = string
+  default = "172.19.0.2"
+} 
+
+
 # variable "container_apps" {
 #   type = list(object({
 #     name = string
