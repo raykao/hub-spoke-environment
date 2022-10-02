@@ -1,6 +1,6 @@
 
 resource "azurerm_network_security_group" "aca" {
-  name = "${var.prefix}-${var.name}-aca-nsg"
+  name = "${local.name}-nsg"
   resource_group_name = var.resource_group.name
   location = var.resource_group.location
 }
@@ -10,8 +10,8 @@ resource "azurerm_network_security_rule" "subnet" {
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "Any"
-  source_address_prefix       = var.subnet.address_prefixes[0]
+  protocol                    = "*"
+  source_address_prefix       = var.subnet_prefix
   source_port_range           = "*"
   destination_port_range      = "*"
   destination_address_prefix  = "*"
@@ -24,7 +24,7 @@ resource "azurerm_network_security_rule" "loadBalancer" {
   priority                    = 110
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "Any"
+  protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
   source_address_prefix       = "AzureLoadBalancer"
@@ -38,7 +38,7 @@ resource "azurerm_network_security_rule" "aksUdp" {
   priority                    = 100
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "UDP"
+  protocol                    = "Udp"
   destination_address_prefix  = "AzureCloud.${var.resource_group.location}"
   destination_port_range      = "1194"
   source_address_prefix       = "*"
@@ -52,7 +52,7 @@ resource "azurerm_network_security_rule" "aksTcp" {
   priority                    = 110
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   destination_address_prefix  = "AzureCloud.${var.resource_group.location}"
   destination_port_range      = "9000"
   source_address_prefix       = "*"
@@ -66,7 +66,7 @@ resource "azurerm_network_security_rule" "azMon" {
   priority                    = 120
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   destination_address_prefix  = "AzureMonitor"
   destination_port_range      = "443"
   source_address_prefix       = "*"
@@ -80,7 +80,7 @@ resource "azurerm_network_security_rule" "https" {
   priority                    = 130
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   destination_address_prefix  = "*"
   destination_port_range      = "443"
   source_address_prefix       = "*"
@@ -94,7 +94,7 @@ resource "azurerm_network_security_rule" "http" {
   priority                    = 135
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   destination_address_prefix  = "*"
   destination_port_range      = "80"
   source_address_prefix       = "*"
@@ -108,7 +108,7 @@ resource "azurerm_network_security_rule" "ntp" {
   priority                    = 140
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "UDP"
+  protocol                    = "Udp"
   destination_address_prefix  = "*"
   destination_port_range      = "123"
   source_address_prefix       = "*"
@@ -119,26 +119,12 @@ resource "azurerm_network_security_rule" "ntp" {
 
 resource "azurerm_network_security_rule" "acaControlPlane1" {
   name                        = "AllowControlPlane5671"
-  priority                    = 140
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "TCP"
-  destination_address_prefix  = "*"
-  destination_port_range      = "5671"
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  resource_group_name         = var.resource_group.name
-  network_security_group_name = azurerm_network_security_group.aca.name
-}
-
-resource "azurerm_network_security_rule" "acaControlPlane2" {
-  name                        = "AllowControlPlane5672"
   priority                    = 150
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   destination_address_prefix  = "*"
-  destination_port_range      = "5672"
+  destination_port_range      = "5671"
   source_address_prefix       = "*"
   source_port_range           = "*"
   resource_group_name         = var.resource_group.name
@@ -150,9 +136,9 @@ resource "azurerm_network_security_rule" "acaControlPlane2" {
   priority                    = 160
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "TCP"
-  destination_address_prefix  = var.subnet.address_prefixes[0]
-  destination_port_range      = "*"
+  protocol                    = "Tcp"
+  destination_address_prefix  = "*"
+  destination_port_range      = "5672"
   source_address_prefix       = "*"
   source_port_range           = "*"
   resource_group_name         = var.resource_group.name
@@ -160,6 +146,6 @@ resource "azurerm_network_security_rule" "acaControlPlane2" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "asa" {
-  subnet_id = var.subnet.id
+  subnet_id = var.subnet_id
   network_security_group_id = azurerm_network_security_group.aca.id
 }

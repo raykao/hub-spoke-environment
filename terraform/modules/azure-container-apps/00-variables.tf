@@ -2,15 +2,17 @@ variable "prefix" {
   type = string
 }
 
-variable "name" {
-  type = string
-}
-
 variable "resource_group" {
   
 }
 
-variable "subnet" {
+variable "subnet_id" {
+  type = string
+}
+
+
+variable "subnet_prefix" {
+  type = string
 }
 
 # variable "container_apps" {

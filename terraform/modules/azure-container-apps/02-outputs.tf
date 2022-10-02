@@ -1,5 +1,5 @@
 output "subnet_id" {
-  value = var.subnet.id
+  value = var.subnet_id
 }
 
 output "nsg_id" {

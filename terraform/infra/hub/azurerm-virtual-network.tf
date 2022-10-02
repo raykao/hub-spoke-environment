@@ -5,6 +5,13 @@ resource "azurerm_virtual_network" "hub" {
 	address_space       = [var.address_space]
 }
 
+resource azurerm_subnet pe {
+  name = "PrivateEndpointSubnet"
+  resource_group_name =  azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes = [cidrsubnet(var.address_space, 8, 0)]
+}
+
 resource azurerm_subnet consul {
   name = "ConsulSubnet"
   resource_group_name =  azurerm_resource_group.hub.name
@@ -44,11 +51,18 @@ resource azurerm_subnet prometheus {
   address_prefixes = [cidrsubnet(var.address_space, 8, 5)]
 }
 
-resource "azurerm_subnet" "aca-infra" {
-  name = "AcaInfraSubnet"
+resource "azurerm_subnet" "aca" {
+  name = "AcaSubnet"
   resource_group_name = azurerm_resource_group.hub.name
   virtual_network_name = azurerm_virtual_network.hub.name
-  address_prefixes = [cidrsubnet(var.address_space, 8, 6)]
+  address_prefixes = [cidrsubnet(var.address_space, 7, 4)]
+}
+
+resource "azurerm_subnet" "aks" {
+  name = "AksSubnet"
+  resource_group_name = azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes = [cidrsubnet(var.address_space, 6, 3)]
 }
 
 resource azurerm_subnet jumpbox {

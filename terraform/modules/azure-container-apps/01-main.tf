@@ -10,3 +10,7 @@ terraform {
     }
   }
 }
+
+locals {
+  name = "${var.prefix}-${var.resource_group.location}-aca"
+}
