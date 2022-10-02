@@ -7,5 +7,4 @@ module "jumpbox" {
 	admin_email = var.admin_email
 	public_key = var.public_key
 	vm_size = "Standard_F16s_v2"
-	index = "1"
 }
