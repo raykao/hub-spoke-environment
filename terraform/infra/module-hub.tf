@@ -5,7 +5,7 @@ module hub {
 		azurerm = azurerm.sub1
 	}
 	
-	prefix = "${local.prefix}hub"
+	prefix = "${local.prefix}"
 	location = local.hub_location
 	admin_username = local.admin_username
 	admin_email = local.admin_email
