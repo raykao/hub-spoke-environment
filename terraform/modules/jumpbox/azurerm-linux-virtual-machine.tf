@@ -21,28 +21,41 @@ resource "azurerm_network_security_group" "jumpbox" {
   resource_group_name = var.resource_group.name
 
   security_rule {
-    name                       = "AllowSSHInbound2202"
+    name                       = "AllowSSHInbound22"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "2022"
-    source_address_prefix      = "${chomp(local.myip)}/32"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 
-	security_rule {
-    name                       = "AllowRDPInbound2023"
-    priority                   = 110
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "2023"
-    source_address_prefix      = "${chomp(local.myip)}/32"
-    destination_address_prefix = "*"
-  }
+
+#   security_rule {
+#     name                       = "AllowSSHInbound2202"
+#     priority                   = 100
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "2022"
+#     source_address_prefix      = "${chomp(local.myip)}/32"
+#     destination_address_prefix = "*"
+#   }
+
+# 	security_rule {
+#     name                       = "AllowRDPInbound2023"
+#     priority                   = 110
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "2023"
+#     source_address_prefix      = "${chomp(local.myip)}/32"
+#     destination_address_prefix = "*"
+#   }
 
 	security_rule {
     name                       = "AllowHttpInternetInbound"
