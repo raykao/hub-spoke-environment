@@ -40,17 +40,17 @@ write_files:
       fi
 
       export PATH=$PATH:/usr/local/go/bin
-      alias docker=podman
+      # alias docker=podman
       alias k=kubectl
     permissions: '0640'
 runcmd:
  
   
-  # Install Podman
-  - source /etc/os-release; sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
-  - wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_20.04/Release.key -O- | apt-key add -
-  - apt-get update -qq -y
-  - apt-get -qq --yes install podman
+  # # Install Podman
+  # - source /etc/os-release; sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+  # - wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_20.04/Release.key -O- | apt-key add -
+  # - apt-get update -qq -y
+  # - apt-get -qq --yes install podman
   
   # Install dotnet core 5 - https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-
   - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
