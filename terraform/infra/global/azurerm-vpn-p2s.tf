@@ -46,7 +46,7 @@ resource "azurerm_point_to_site_vpn_gateway" "p2s" {
 
     vpn_client_address_pool {
       address_prefixes = [
-        "172.17.${each.value}.0/24"
+        "172.26.${each.value}.0/24"
       ]
     }
   }
