@@ -77,6 +77,12 @@
 #   }
 # }
 
+# resource "azurerm_role_assignment" "aks-custom-role" {  	
+# 	scope                = azurerm_resource_group.spoke1.id
+# 	role_definition_name = "${local.prefix}-aks-custom-role"
+# 	principal_id         = azurerm_user_assigned_identity.aks.principal_id
+# }
+
 resource "azurerm_user_assigned_identity" "aks" {
   name                = "${local.prefix}-aks-identity"
   resource_group_name = azurerm_resource_group.spoke1.name
@@ -85,7 +91,6 @@ resource "azurerm_user_assigned_identity" "aks" {
 
 resource "azurerm_role_assignment" "aks-dns" {
   scope                = azurerm_private_dns_zone.aks.id
-#   scope = azurerm_resource_group.spoke1.id
   role_definition_name = "Private DNS Zone Contributor"
   principal_id         = azurerm_user_assigned_identity.aks.principal_id
 }
@@ -96,13 +101,6 @@ resource "azurerm_role_assignment" "aks-network-contrib" {
 	principal_id         = azurerm_user_assigned_identity.aks.principal_id
 }
 
-# resource "azurerm_role_assignment" "aks-custom-role" {  	
-# 	scope                = azurerm_resource_group.spoke1.id
-# 	role_definition_name = "${local.prefix}-aks-custom-role"
-# 	principal_id         = azurerm_user_assigned_identity.aks.principal_id
-# }
-
-
 ## Used because the custom role is not available
 resource "azurerm_role_assignment" "aks-contributor" {  	
 	scope                = azurerm_resource_group.spoke1.id
@@ -110,20 +108,20 @@ resource "azurerm_role_assignment" "aks-contributor" {
 	principal_id         = azurerm_user_assigned_identity.aks.principal_id
 }
 
-resource "time_sleep" "aks_role_assignments" {
-  depends_on = [
-        azurerm_role_assignment.aks-dns,
-        azurerm_role_assignment.aks-network-contrib,
-		azurerm_role_assignment.aks-contributor,
-	]
+# resource "time_sleep" "aks_role_assignments" {
+#   depends_on = [
+#         azurerm_role_assignment.aks-dns,
+#         azurerm_role_assignment.aks-network-contrib,
+# 		azurerm_role_assignment.aks-contributor,
+# 	]
 
-  create_duration = "30s"
-}
+#   create_duration = "30s"
+# }
 
 module aks1 {
-	depends_on = [
-	  time_sleep.aks_role_assignments
-	]
+	# depends_on = [
+	#   time_sleep.aks_role_assignments
+	# ]
 	
 	source = "../../modules/aks/private"
 
