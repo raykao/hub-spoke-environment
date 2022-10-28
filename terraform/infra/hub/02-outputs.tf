@@ -6,10 +6,9 @@ output resource_group {
 	value = azurerm_resource_group.hub
 }
 
-output admin_subnet {
+output jumpbox_subnet {
 	value = azurerm_subnet.jumpbox
 }
-
 
 output "keyvault_private_dns_zone_id" {
 	value = azurerm_private_dns_zone.keyvault.id
