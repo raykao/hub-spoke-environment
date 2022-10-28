@@ -9,6 +9,7 @@ resource azurerm_kubernetes_cluster default {
 	resource_group_name = var.resource_group.name
 	
 	dns_prefix = local.cluster_name
+
 	private_cluster_enabled = true
 	private_dns_zone_id     = var.private_dns_zone_id
 
@@ -21,16 +22,28 @@ resource azurerm_kubernetes_cluster default {
 
 	identity {
 		type = "UserAssigned"
-		user_assigned_identity_id = var.user_msi_id
+		identity_ids = [
+			var.user_msi_id
+		]
 	}
 
-	role_based_access_control {
-		enabled = true
-		azure_active_directory {
-			managed = true
-			admin_group_object_ids = var.admin_group_object_ids
-			azure_rbac_enabled = true
+	role_based_access_control_enabled = true
+
+	azure_active_directory_role_based_access_control {
+	  managed = true
+	  azure_rbac_enabled = true
+	  admin_group_object_ids = var.admin_group_object_ids
+	}
+
+	linux_profile {
+		admin_username = var.admin_username
+		ssh_key {
+		key_data = file(var.admin_public_key)
 		}
+	}
+
+	oms_agent {
+		log_analytics_workspace_id = azurerm_log_analytics_workspace.aks.id
 	}
 
 	network_profile {
@@ -42,9 +55,9 @@ resource azurerm_kubernetes_cluster default {
 		docker_bridge_cidr = "172.17.0.1/16"
 	}
 
-	addon_profile {
-		kube_dashboard {
-		enabled = false
-		}
+	lifecycle {
+	  ignore_changes = [
+		kubernetes_version
+	  ]
 	}
 }

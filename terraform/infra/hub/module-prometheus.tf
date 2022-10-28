@@ -90,7 +90,7 @@ resource "azurerm_user_assigned_identity" "prom-aks" {
 }
 
 resource "azurerm_role_assignment" "prom-aks-dns" {
-  scope                = azurerm_private_dns_zone.prom-aks.id
+  scope                = azurerm_private_dns_zone.aks.id
   role_definition_name = "Private DNS Zone Contributor"
   principal_id         = azurerm_user_assigned_identity.prom-aks.principal_id
 }
@@ -127,8 +127,10 @@ module prom1 {
 	prefix = "${local.prefix}"
 	suffix = "1"
 	resource_group = azurerm_resource_group.hub
-	subnet_id = azurerm_subnet.aks1.id
+	subnet_id = azurerm_subnet.prometheus.id
 	private_dns_zone_id = azurerm_private_dns_zone.aks.id
-	user_msi_id =  azurerm_user_assigned_identity.aks.id
-	admin_group_object_ids = var.admin_groups.aks
+	user_msi_id =  azurerm_user_assigned_identity.prom-aks.id
+	admin_group_object_ids = [ var.admin_groups.aks.object_id ]
+	admin_public_key = var.public_key
+	admin_username = var.admin_username
 }

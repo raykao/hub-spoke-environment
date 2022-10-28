@@ -65,6 +65,7 @@ resource "azurerm_subnet" "aks" {
   address_prefixes = [cidrsubnet(var.address_space, 6, 3)]
 }
 
+
 resource azurerm_subnet jumpbox {
 	name = "JumpboxSubnet"
 	resource_group_name  = azurerm_resource_group.hub.name

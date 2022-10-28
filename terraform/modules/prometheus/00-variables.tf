@@ -14,6 +14,14 @@ variable "type" {
 	default = "private"
 }
 
+variable "admin_username" {
+  type = string
+}
+
+variable "admin_public_key" {
+	type = string
+}
+
 variable "user_msi_id" {
   type = string
 }

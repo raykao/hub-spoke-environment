@@ -18,4 +18,5 @@ module hub {
 	vwan_hub_id = module.global.virtual_hubs[local.hub_location].id
 
 	firewall_policy_id = module.global.firewall_policy_ids[local.hub_location]
+	admin_groups = var.admin_groups
 }

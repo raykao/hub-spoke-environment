@@ -42,3 +42,7 @@ variable "region" {
 variable "vwan_hub_id" {
 	type = string
 }
+
+variable "admin_groups" {
+  
+}

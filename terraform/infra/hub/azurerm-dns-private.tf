@@ -3,6 +3,11 @@ resource "azurerm_private_dns_zone" "hub" {
 	resource_group_name = azurerm_resource_group.hub.name
 }
 
+resource "azurerm_private_dns_zone" "aks" {
+	name                = "privatelink.${azurerm_resource_group.hub.location}.azmk8s.io"
+	resource_group_name = azurerm_resource_group.hub.name
+}
+
 resource "azurerm_private_dns_zone" "mysql" {
 	name                = "privatelink.mysql.database.azure.com"
 	resource_group_name = azurerm_resource_group.hub.name
