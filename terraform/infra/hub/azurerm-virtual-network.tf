@@ -51,6 +51,37 @@ resource azurerm_subnet prometheus {
   address_prefixes = [cidrsubnet(var.address_space, 8, 5)]
 }
 
+
+resource azurerm_subnet dns_resolver_in {
+  name                 = "DnsResolverInBoundSubnet"
+  resource_group_name  = azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes     = [cidrsubnet(var.address_space, 8, 6)]
+
+  delegation {
+    name = "Microsoft.Network.dnsResolvers"
+    service_delegation {
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+      name    = "Microsoft.Network/dnsResolvers"
+    }
+  }
+}
+
+resource azurerm_subnet dns_resolver_out {
+  name                 = "DnsResolverOutBoundSubnet"
+  resource_group_name  = azurerm_resource_group.hub.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes     = [cidrsubnet(var.address_space, 8, 7)]
+
+  delegation {
+    name = "Microsoft.Network.dnsResolvers"
+    service_delegation {
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+      name    = "Microsoft.Network/dnsResolvers"
+    }
+  }
+}
+
 resource "azurerm_subnet" "aca" {
   name = "AcaSubnet"
   resource_group_name = azurerm_resource_group.hub.name
