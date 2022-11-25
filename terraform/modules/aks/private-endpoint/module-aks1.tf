@@ -35,12 +35,12 @@ resource "azurerm_role_assignment" "aks-contributor" {
 }
 
 module aks1 {
-	source = "../../modules/aks/private"
+	source = "../modules/aks/private"
 
 	prefix = "${local.name}"
 	suffix = "1"
 	resource_group = azurerm_resource_group.default
-	subnet_id = azurerm_subnet.aks1.id
+	subnet_id = azurerm_subnet.aks.id
 	private_dns_zone_id = azurerm_private_dns_zone.aks.id
 	user_msi_id =  azurerm_user_assigned_identity.aks.id
 	admin_group_object_ids = var.admin_groups.aks

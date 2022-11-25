@@ -1,3 +1,4 @@
+# Extra Load Balancer required to deterministically pre-allocate a first hop for network traffic, since AKS will create it's own Internal LB.
 resource "azurerm_lb" "pls-firsthop" {
   name                = "pls-firsthop-lb"
   sku                 = "Standard"
@@ -15,6 +16,8 @@ resource "azurerm_lb_backend_address_pool" "aks" {
   name            = "AksBackEndAddressPool"
 }
 
+# We will need to point the backend address pool to the IP address of the presumed first LB of the AKS Cluster
+# Since we will statically assign this with K8s annotations (See './manifest/internal-lb-private-link-service-example.yaml') we can know in advance that it will be .5 of the /24 AKS LB Subnet
 resource "azurerm_lb_backend_address_pool_address" "aks_lb_1" {
   name                    = "aks_lb_1"
   backend_address_pool_id = azurerm_lb_backend_address_pool.aks.id
