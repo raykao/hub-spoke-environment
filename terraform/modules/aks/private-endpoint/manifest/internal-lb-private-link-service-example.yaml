@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-app
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "LoadBalancerSubnet"
+    # Allow AKS to provision a Private Link Service - in Preview
+    # service.beta.kubernetes.io/azure-pls-create: "true"
+
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.0.1.4
+  ports:
+  - port: 80
+  - port: 443
+  selector:
+    app: internal-app
