@@ -22,12 +22,12 @@ variable "address_space" {
 	type = string
 }
 
-variable "jumpbox_cidr" {
-  type = string
-}
-
 variable "domain" {
 	type = string
+}
+
+variable "firewall_ip" {
+  type = string
 }
 
 variable "firewall_policy_id" {

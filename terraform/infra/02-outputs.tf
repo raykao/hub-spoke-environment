@@ -25,6 +25,15 @@ output vpn_s2s_pre_shared_key {
 # 	value = module.global.vpn_ip
 # }
 
+output "firewall_ips" {
+  value = module.global.firewall_ips
+}
+
 output "firewall_policy_ids" {
   value = module.global.firewall_policy_ids
+}
+
+output "win_password" {
+  value = module.hub.win11_password
+  sensitive = true
 }

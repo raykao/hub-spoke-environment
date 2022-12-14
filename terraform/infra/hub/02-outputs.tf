@@ -21,3 +21,8 @@ output "mysql_private_dns_zone_id" {
 output "pgsql_private_dns_zone_id" {
 	value = azurerm_private_dns_zone.pgsql.id
 }
+
+output "win11_password" {
+  value = module.win11jumpbox.admin_password
+  sensitive = true
+}

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.29.1"
+      version = "~> 3.35.0"
     }
 	azapi = {
       source = "Azure/azapi"
@@ -48,9 +48,8 @@ locals {
 	onprem_cidr = var.onprem_cidr
 	
 	hub_location = var.virtual_hub_regions[0]
-	hub_cidr = cidrsubnet(local.global_address_space, 8, 255)
-	jumpbox_cidr = cidrsubnet(local.hub_cidr, 8, 255)
-	
+
+	hub_cidr = cidrsubnet(local.global_address_space, 8, 255)	
 	spoke1_cidr = cidrsubnet(local.global_address_space, 8, 1)
 	spoke2_cidr = cidrsubnet(local.global_address_space, 8, 2)
 	spoke3_cidr = cidrsubnet(local.global_address_space, 8, 3)

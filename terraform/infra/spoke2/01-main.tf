@@ -14,5 +14,5 @@ locals {
 }
 
 data "http" "myip" {
-  url = "https://api.ipify.org/"
+  url = "https://ipv4.icanhazip.com/"
 }

@@ -12,11 +12,12 @@ terraform {
 
 locals {
 	prefix = var.prefix
+  myip = trimspace(data.http.myip.response_body)
 }
 
 data "azurerm_client_config" "current" {
 }
 
 data "http" "myip" {
-  url = "https://api.ipify.org/"
+  url = "https://ipv4.icanhazip.com/"
 }

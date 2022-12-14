@@ -30,7 +30,7 @@ resource "azurerm_vpn_site" "s2s" {
 
     link {
         name       = "home${each.value}"
-        ip_address = data.http.myip.response_body
+        ip_address = local.myip
         speed_in_mbps = 100
     }
 }

@@ -8,7 +8,6 @@ module hub {
 	prefix = "${local.prefix}"
 	location = local.hub_location
 	address_space = local.hub_cidr
-	jumpbox_cidr = local.jumpbox_cidr
 	domain = local.domain
 	
 	admin_username = local.admin_username
@@ -17,6 +16,7 @@ module hub {
 
 	vwan_hub_id = module.global.virtual_hubs[local.hub_location].id
 
+	firewall_ip = module.global.firewall_ips[local.hub_location][0]
 	firewall_policy_id = module.global.firewall_policy_ids[local.hub_location]
 	admin_groups = var.admin_groups
 }

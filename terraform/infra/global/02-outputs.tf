@@ -42,6 +42,12 @@ output "virtual_hubs" {
 	}
 }
 
+output "firewall_ips" {
+	value = {
+		for region, fw in azurerm_firewall.hubs: region => flatten(fw.virtual_hub[0].public_ip_addresses)
+	}
+}
+
 output "firewall_policy_ids" {
 	value = {
 		for k, instance in azurerm_firewall_policy.hubs: instance.location => azurerm_firewall_policy.hubs["${instance.location}"].id
