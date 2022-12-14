@@ -1,4 +1,3 @@
-
 resource "azurerm_firewall_policy_rule_collection_group" "hubs" {
   for_each = {
 		for idx, region in var.virtual_hub_regions: region => idx
@@ -22,7 +21,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "hubs" {
 		} 
 	}
 
-	network_rule_collection {
+    network_rule_collection {
 	  name = "ntp"
 	  priority = 105
 	  action = "Allow"

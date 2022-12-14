@@ -7,6 +7,6 @@ resource "azurerm_firewall_policy" "hubs" {
   location            = "${each.key}"
 
   dns {
-	proxy_enabled = true
+	  proxy_enabled = true
   }
 }
