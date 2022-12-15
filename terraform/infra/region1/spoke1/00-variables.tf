@@ -34,15 +34,14 @@ variable "firewall_policy_id" {
   	type = string
 }
 
-variable "region" {
-  type = string
-  default = "hub"
-}
-
 variable "vwan_hub_id" {
 	type = string
 }
 
 variable "admin_groups" {
   
+}
+
+variable "dns_servers" {
+  type = list
 }

@@ -16,3 +16,5 @@ admin_groups = {
 		object_id = ""
 	}
 }
+onprem_dns_server = "10.0.0.10"
+onprem_domain = "example.local."

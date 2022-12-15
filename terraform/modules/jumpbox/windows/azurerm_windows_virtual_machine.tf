@@ -10,6 +10,32 @@ resource "azurerm_network_interface" "example" {
   }
 }
 
+
+resource "azurerm_network_security_group" "example" {
+  
+	name                = "${local.hostname}-nsg"
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
+
+  security_rule {
+		name                       = "AllowRDPInbound3389"
+    description = null
+		priority                   = 100
+		direction                  = "Inbound"
+		access                     = "Allow"
+		protocol                   = "Tcp"
+		source_port_range          = "*"
+		destination_port_range     = "3389"
+		source_address_prefix      = "VirtualNetwork"
+		destination_address_prefix = "VirtualNetwork"
+	}
+}
+
+resource "azurerm_network_interface_security_group_association" "example" {
+	network_interface_id                 = azurerm_windows_virtual_machine.example.network_interface_ids[0]
+	network_security_group_id 			     = azurerm_network_security_group.example.id
+}
+
 resource "azurerm_windows_virtual_machine" "example" {
   name                = local.hostname
   resource_group_name = var.resource_group.name

@@ -49,3 +49,11 @@ variable "admin_pub_ssh_key" {
 variable "admin_groups" {
   
 }
+
+variable "onprem_dns_server" {
+  type = string
+}
+
+variable "onprem_domain" {
+  type = string
+}

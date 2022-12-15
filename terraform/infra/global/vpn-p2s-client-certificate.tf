@@ -27,17 +27,17 @@ resource "tls_locally_signed_cert" "vpn-client-signed-cert" {
 
 resource "local_file" "client-signed-cert" {
   content = tls_locally_signed_cert.vpn-client-signed-cert.cert_pem
-  filename = "certs/client/cert.pem.crt"
+  filename = "certs/vpn/client/cert.pem.crt"
 
   ## Possible way to generate pkcs12 cert for windows...but we can also use the PKCS12 provider from chilicat
   # provisioner "local-exec" {
-  #   command = "openssl pkcs12 -export -in certs/client/cert.pem.crt -inkey certs/client/private.key -out certs/client/client.pfx -passout pass:mypassword"
+  #   command = "openssl pkcs12 -export -in certs/vpn/client/cert.pem.crt -inkey certs/vpn/client/private.key -out certs/vpn/client/client.pfx -passout pass:mypassword"
   # }
 }
 
 resource "local_file" "client-key" {
   content = tls_private_key.vpn-client-key.private_key_pem
-  filename = "certs/client/private.key"
+  filename = "certs/vpn/client/private.key"
 }
 
 resource "pkcs12_from_pem" "client-cert" {
@@ -47,6 +47,6 @@ resource "pkcs12_from_pem" "client-cert" {
 }
 
 resource "local_file" "client-ca-signed-pkcs12-cert" {
-  filename = "certs/client/client.pfx"
+  filename = "certs/vpn/client/client.pfx"
   content_base64 = pkcs12_from_pem.client-cert.result
 }

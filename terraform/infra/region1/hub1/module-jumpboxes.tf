@@ -62,7 +62,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "windowsjumpbox" {
 }
 
 module "jumpbox" {	
-	source = "../../modules/jumpbox"
+	source = "../../modules/jumpbox/linux"
 	prefix = local.name
 	resource_group = azurerm_resource_group.hub
 	subnet_id = azurerm_subnet.jumpbox.id
