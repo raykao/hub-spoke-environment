@@ -36,7 +36,6 @@ variable "firewall_policy_id" {
 
 variable "region" {
   type = string
-  default = "hub"
 }
 
 variable "vwan_hub_id" {
@@ -53,4 +52,12 @@ variable "onprem_dns_server" {
 
 variable "onprem_domain" {
   type = string
+}
+
+variable "global_private_zone" {
+  type = map
+}
+
+variable "global_private_dns_zones" {
+  type = map
 }

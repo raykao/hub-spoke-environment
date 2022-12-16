@@ -6,8 +6,11 @@ output "resource_group" {
 	value = azurerm_resource_group.global
 }
 
-output "private_dns_zone" {
-	value = azurerm_private_dns_zone.global
+output "global_private_zone" {
+	value = {
+		name = azurerm_private_dns_zone.global.name
+		resource_group_name = azurerm_private_dns_zone.global.resource_group_name
+	}
 }
 
 output "public_dns_zone" {
@@ -58,4 +61,12 @@ output "private_dns_zone_ids" {
 	value = [
 		azurerm_private_dns_zone.global.id
 	]
+}
+
+output "private_dns_zones" {
+  value = {
+	keyvault 	= azurerm_private_dns_zone.keyvault
+	mysql 		= azurerm_private_dns_zone.mysql
+	pgsql		= azurerm_private_dns_zone.pgsql
+  }
 }

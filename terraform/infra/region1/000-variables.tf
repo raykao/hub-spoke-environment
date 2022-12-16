@@ -53,3 +53,11 @@ variable "onprem_domain" {
 variable "onprem_dns_server" {
   type = string
 }
+
+variable "global_private_zone" {
+  type = map
+}
+
+variable "global_private_dns_zones" {
+  type = map
+}

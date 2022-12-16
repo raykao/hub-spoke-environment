@@ -12,9 +12,10 @@ output jumpbox_subnet {
 
 output "hub_private_dns_zones" {
 	value = {
-		keyvault 	= azurerm_private_dns_zone.keyvault
-		mysql 		= azurerm_private_dns_zone.mysql
-		pgsql		= azurerm_private_dns_zone.pgsql
+		# keyvault 	= azurerm_private_dns_zone.keyvault
+		# mysql 		= azurerm_private_dns_zone.mysql
+		# pgsql		= azurerm_private_dns_zone.pgsql
+		hub			= azurerm_private_dns_zone.hub
 		aks			= azurerm_private_dns_zone.aks
 	}
 }

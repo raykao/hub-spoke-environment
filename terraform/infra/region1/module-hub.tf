@@ -3,6 +3,7 @@ module hub {
 	
 	prefix = "${local.prefix}"
 	location = var.location
+	region = var.region
 	address_space = local.hub_cidr
 	
 	domain = var.domain
@@ -19,4 +20,7 @@ module hub {
 
 	onprem_dns_server = var.onprem_dns_server
 	onprem_domain = var.onprem_domain
+
+	global_private_zone = var.global_private_zone
+	global_private_dns_zones = var.global_private_dns_zones
 }

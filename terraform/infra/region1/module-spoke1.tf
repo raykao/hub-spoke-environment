@@ -20,23 +20,7 @@ module spoke1 {
 	
 	dns_servers = module.hub.dns_resolvers
 
+	global_private_zone = var.global_private_zone
+
 	hub_private_dns_zones = module.hub.hub_private_dns_zones
 }
-
-# resource "azurerm_virtual_hub_connection" "spoke1" {
-# 	provider = azurerm.sub1
-#   name                      = "canadacentral-spoke1-vhub"
-#   virtual_hub_id            = module.global.virtual_hubs["canadacentral"].id
-#   remote_virtual_network_id = module.spoke1.vnet.id
-# 	internet_security_enabled = true
-# }
-
-# resource "azurerm_dns_ns_record" "spoke1" {
-#   provider = azurerm.sub1
-#   name = "spoke1"
-#   zone_name           = module.global.public_dns_zone.name
-#   resource_group_name = module.global.public_dns_zone.resource_group_name
-#   ttl                 = 30
-
-#   records = module.spoke1.public_dns_zone.name_servers
-# }

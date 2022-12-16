@@ -46,6 +46,10 @@ variable "dns_servers" {
   type = list
 }
 
+variable "global_private_zone" {
+  type = map
+}
+
 variable "hub_private_dns_zones" {
 	type = map
 }

@@ -27,4 +27,7 @@ module region1 {
 	
 	onprem_domain = var.onprem_domain
 	onprem_dns_server = var.onprem_dns_server
+
+	global_private_zone = module.global.global_private_zone
+	global_private_dns_zones = module.global.private_dns_zones
 }
