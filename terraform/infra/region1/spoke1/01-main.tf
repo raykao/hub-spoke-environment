@@ -8,8 +8,7 @@ terraform {
 }
 
 locals {
-	prefix = var.prefix
-	region = "spoke1"
+	prefix = "${var.prefix}s1"
 }
 
 data "azurerm_subscription" "current" {

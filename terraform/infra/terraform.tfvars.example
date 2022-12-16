@@ -2,9 +2,9 @@
 prefix = "gbb01"
 subId1 = "" # Must be Subscription with CSI Drivers enabled for AKS clusters
 subId2 = ""
-virtual_hub_regions = [
+regions = [
 	"canadacentral",
-	"westus"
+	"eastus"
 ]
 domain = "example.cloud"
 onprem_cidr = "10.0.0.0"

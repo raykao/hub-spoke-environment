@@ -2,7 +2,7 @@
 # 
 # resource "azurerm_role_definition" "aks" {
 #   name        = "${local.prefix}-aks-custom-role"
-#   scope       = azurerm_resource_group.spoke1.id
+#   scope       = azurerm_resource_group.spoke.id
 #   description = "This is a custom role created via Terraform"
 
 #   permissions {
@@ -78,34 +78,34 @@
 # }
 
 # resource "azurerm_role_assignment" "aks-custom-role" {  	
-# 	scope                = azurerm_resource_group.spoke1.id
+# 	scope                = azurerm_resource_group.spoke.id
 # 	role_definition_name = "${local.prefix}-aks-custom-role"
 # 	principal_id         = azurerm_user_assigned_identity.aks.principal_id
 # }
 
-resource "azurerm_user_assigned_identity" "prom-aks" {
-  name                = "${local.prefix}-prom-aks-identity"
-  resource_group_name = azurerm_resource_group.hub.name
-  location            = azurerm_resource_group.hub.location
+resource "azurerm_user_assigned_identity" "aks1" {
+  name                = "${local.prefix}-aks-identity"
+  resource_group_name = azurerm_resource_group.spoke.name
+  location            = azurerm_resource_group.spoke.location
 }
 
-resource "azurerm_role_assignment" "prom-aks-dns" {
-  scope                = azurerm_private_dns_zone.aks.id
+resource "azurerm_role_assignment" "aks1-dns" {
+  scope                = var.hub_private_dns_zones.aks.id
   role_definition_name = "Private DNS Zone Contributor"
-  principal_id         = azurerm_user_assigned_identity.prom-aks.principal_id
+  principal_id         = azurerm_user_assigned_identity.aks1.principal_id
 }
 
-resource "azurerm_role_assignment" "prom-aks-network-contrib" {  	
-	scope                = azurerm_virtual_network.hub.id
+resource "azurerm_role_assignment" "aks1-network-contrib" {  	
+	scope                = azurerm_virtual_network.spoke.id
 	role_definition_name = "Network Contributor"
-	principal_id         = azurerm_user_assigned_identity.prom-aks.principal_id
+	principal_id         = azurerm_user_assigned_identity.aks1.principal_id
 }
 
 ## Used because the custom role is not available
-resource "azurerm_role_assignment" "prom-aks-contributor" {  	
-	scope                = azurerm_resource_group.hub.id
+resource "azurerm_role_assignment" "aks-contributor" {  	
+	scope                = azurerm_resource_group.spoke.id
 	role_definition_name = "Contributor"
-	principal_id         = azurerm_user_assigned_identity.prom-aks.principal_id
+	principal_id         = azurerm_user_assigned_identity.aks1.principal_id
 }
 
 # resource "time_sleep" "aks_role_assignments" {
@@ -118,19 +118,16 @@ resource "azurerm_role_assignment" "prom-aks-contributor" {
 #   create_duration = "30s"
 # }
 
-module prom1 {
-	# depends_on = [
-	#   time_sleep.aks_role_assignments
-	# ]
-	
-	source = "../../modules/prometheus"
+module aks1 {
+	source = "../../../modules/aks/private"
+
 	prefix = "${local.prefix}"
 	suffix = "1"
-	resource_group = azurerm_resource_group.hub
-	subnet_id = azurerm_subnet.prometheus.id
-	private_dns_zone_id = azurerm_private_dns_zone.aks.id
-	user_msi_id =  azurerm_user_assigned_identity.prom-aks.id
-	admin_group_object_ids = [ var.admin_groups.aks.object_id ]
-	admin_public_key = var.public_key
-	admin_username = var.admin_username
+	resource_group = azurerm_resource_group.spoke
+	subnet_id = azurerm_subnet.aks1.id
+	private_dns_zone_id = var.hub_private_dns_zones.aks.id
+	user_msi_id =  azurerm_user_assigned_identity.aks1.id
+	admin_group_object_ids = [
+		var.admin_groups.aks
+	]
 }

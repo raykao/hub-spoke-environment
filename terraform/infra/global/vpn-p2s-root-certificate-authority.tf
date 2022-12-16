@@ -23,10 +23,10 @@ resource "tls_self_signed_cert" "root-ca" {
 
 resource "local_file" "rootca" {
   content = tls_self_signed_cert.root-ca.cert_pem
-  filename = "certs/vpn/rootca/ca.pem"
+  filename = "certs/vpn/rootca/rootca.pem"
 }
 
 resource "local_file" "rootkey" {
   content = tls_self_signed_cert.root-ca.private_key_pem
-  filename = "certs/vpn/rootca/key.pem"
+  filename = "certs/vpn/rootca/rootkey.pem"
 }

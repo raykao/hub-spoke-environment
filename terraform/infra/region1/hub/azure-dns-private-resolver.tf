@@ -1,6 +1,6 @@
 
 resource "azurerm_private_dns_resolver" "hub" {
-  name                = "${local.name}-priv-dns-resolver"
+  name                = "${local.prefix}-priv-dns-resolver"
   resource_group_name = azurerm_resource_group.hub.name
   location            = azurerm_resource_group.hub.location
   virtual_network_id  = azurerm_virtual_network.hub.id

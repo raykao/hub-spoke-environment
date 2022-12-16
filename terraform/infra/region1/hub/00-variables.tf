@@ -44,7 +44,7 @@ variable "vwan_hub_id" {
 }
 
 variable "admin_groups" {
-  
+	type = map
 }
 
 variable "onprem_dns_server" {

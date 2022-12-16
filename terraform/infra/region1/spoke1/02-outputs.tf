@@ -1,11 +1,7 @@
 output vnet {
-	value = azurerm_virtual_network.spoke1
+	value = azurerm_virtual_network.spoke
 }
 
 output resource_group {
-	value = azurerm_resource_group.spoke1
-}
-
-output public_dns_zone {
-	value = azurerm_dns_zone.spoke1
+	value = azurerm_resource_group.spoke
 }

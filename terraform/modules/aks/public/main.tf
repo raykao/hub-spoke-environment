@@ -1,7 +1,7 @@
 resource azurerm_kubernetes_cluster spoke1 {
 	name                = "${local.prefix}spoke1cluster"
-	location            = azurerm_resource_group.spoke1.location
-	resource_group_name = azurerm_resource_group.spoke1.name
+	location            = azurerm_resource_group.spoke.location
+	resource_group_name = azurerm_resource_group.spoke.name
 	
 	dns_prefix          = "${local.prefix}spoke1cluster"
 

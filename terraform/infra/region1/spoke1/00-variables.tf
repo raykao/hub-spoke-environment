@@ -45,3 +45,7 @@ variable "admin_groups" {
 variable "dns_servers" {
   type = list
 }
+
+variable "hub_private_dns_zones" {
+	type = map
+}

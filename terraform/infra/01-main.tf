@@ -45,13 +45,16 @@ locals {
 	domain = var.domain
 
 	global_address_space = var.global_address_space
+	
 	onprem_cidr = var.onprem_cidr
 	
-	hub_location = var.virtual_hub_regions[0]
+	regions = var.regions
 
-	hub_cidr = cidrsubnet(local.global_address_space, 8, 255)	
-	spoke1_cidr = cidrsubnet(local.global_address_space, 8, 1)
-	spoke2_cidr = cidrsubnet(local.global_address_space, 8, 2)
-	spoke3_cidr = cidrsubnet(local.global_address_space, 8, 3)
-	spoke4_cidr = cidrsubnet(local.global_address_space, 8, 4)
+	# Allow regions to self-delegate/carve out hub/spoke cidr ranges given a /16 block for each region
+	region1_cidr 	 = cidrsubnet(local.global_address_space, 8, 1)
+	region2_cidr 	 = cidrsubnet(local.global_address_space, 8, 2)
+	region3_cidr 	 = cidrsubnet(local.global_address_space, 8, 3)
+	region4_cidr 	 = cidrsubnet(local.global_address_space, 8, 4)
+	region5_cidr 	 = cidrsubnet(local.global_address_space, 8, 5)
+	region6_cidr 	 = cidrsubnet(local.global_address_space, 8, 6)
 }

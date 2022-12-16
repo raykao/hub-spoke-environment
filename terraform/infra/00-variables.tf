@@ -20,7 +20,7 @@ variable "global_address_space" {
   default = "10.0.0.0/8"
 }
 
-variable "virtual_hub_regions" {
+variable "regions" {
   type = list
   default = [
     "canadacentral",
@@ -47,7 +47,7 @@ variable "admin_pub_ssh_key" {
 }
 
 variable "admin_groups" {
-  
+  type = map
 }
 
 variable "onprem_dns_server" {

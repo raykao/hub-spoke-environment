@@ -55,16 +55,16 @@ resource azurerm_kubernetes_cluster default {
 
 	identity {
 		type = "UserAssigned"
-		user_assigned_identity_id = var.user_msi_id
+		identity_ids = [
+			var.user_msi_id
+		]
 	}
 
-	role_based_access_control {
-		enabled = true
-		azure_active_directory {
-			managed = true
-			admin_group_object_ids = var.admin_group_object_ids
-			azure_rbac_enabled = true
-		}
+	role_based_access_control_enabled = true
+
+	azure_active_directory_role_based_access_control {
+		managed = true
+		admin_group_object_ids = var.admin_group_object_ids
 	}
 
 	network_profile {
@@ -74,11 +74,5 @@ resource azurerm_kubernetes_cluster default {
 		service_cidr       = "192.168.0.0/24"
 		dns_service_ip     = "192.168.0.10"
 		docker_bridge_cidr = "172.17.0.1/16"
-	}
-
-	addon_profile {
-		kube_dashboard {
-		enabled = false
-		}
 	}
 }

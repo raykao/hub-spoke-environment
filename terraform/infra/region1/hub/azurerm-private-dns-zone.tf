@@ -4,7 +4,7 @@ resource "azurerm_private_dns_zone" "hub" {
 }
 
 resource "azurerm_private_dns_zone" "aks" {
-	name                = "privatelink.${azurerm_resource_group.hub.location}.azmk8s.io"
+	name                = "privatelink.${var.location}.azmk8s.io"
 	resource_group_name = azurerm_resource_group.hub.name
 }
 
@@ -49,5 +49,12 @@ resource "azurerm_private_dns_zone_virtual_network_link" "keyvault" {
 	name                  = "hub-keyvault-priv-dns-link"
 	resource_group_name   = azurerm_resource_group.hub.name
 	private_dns_zone_name = azurerm_private_dns_zone.keyvault.name
+	virtual_network_id    = azurerm_virtual_network.hub.id
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "aks" {
+	name                  = "hub-aks-priv-dns-link"
+	resource_group_name   = azurerm_resource_group.hub.name
+	private_dns_zone_name = azurerm_private_dns_zone.aks.name
 	virtual_network_id    = azurerm_virtual_network.hub.id
 }
