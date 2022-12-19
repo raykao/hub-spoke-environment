@@ -38,3 +38,13 @@ variable "disk_size_gb" {
   type    = string
   default = "2048"
 }
+
+variable "secure_boot_enabled" {
+  type = bool
+  default = false
+}
+
+variable "vtpm_enabled" {
+  type = bool
+  default = false
+}
