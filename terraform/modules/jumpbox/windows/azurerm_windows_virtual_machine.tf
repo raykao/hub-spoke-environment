@@ -3,6 +3,8 @@ resource "azurerm_network_interface" "example" {
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
 
+  enable_accelerated_networking = true
+
   ip_configuration {
     name                          = "internal"
     subnet_id                     = var.subnet_id
@@ -46,8 +48,11 @@ resource "azurerm_windows_virtual_machine" "example" {
   network_interface_ids = [
     azurerm_network_interface.example.id,
   ]
-  
-  vtpm_enabled = false
+
+  # Disable secure boot and vTPM if you want to use WSL
+  # Nested Virtualization does not work when vTPM is enabled  
+  secure_boot_enabled = var.secure_boot_enabled
+  vtpm_enabled = var.vtpm_enabled
 
   allow_extension_operations = true
 
@@ -92,9 +97,3 @@ resource "azurerm_windows_virtual_machine" "example" {
 #   role_definition_name = "Virtual Machine Administrator Login"
 #   principal_id = local.current_user
 # }
-
-resource "azurerm_role_assignment" "jumpbox-contributor" {
-  scope                = var.resource_group.id
-  role_definition_name = "Contributor"
-  principal_id         = azurerm_windows_virtual_machine.example.identity[0].principal_id
-}
