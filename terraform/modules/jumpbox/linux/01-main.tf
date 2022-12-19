@@ -14,15 +14,10 @@ resource "random_string" "suffix" {
 	upper 	= false
 }
 
-data "http" "myip" {
-  url = "https://ipv4.icanhazip.com/"
-}
-
 locals {
 	prefix = "${var.prefix}"
 	suffix = random_string.suffix.result
-	name = "${local.prefix}jumpbox${local.suffix}"
-	myip = data.http.myip.response_body
+	name = "${local.prefix}linux${local.suffix}"
 
 	admin_username = var.admin_username
 	admin_email = var.admin_email
